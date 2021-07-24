@@ -50,7 +50,7 @@ class DbApi {
         return dataSource.getConnection();
     }
 
-    Response readAll(String tableName, Class cls) {
+    Response readAll(String tableName, Class<? extends Entity> cls) {
         StringBuilder sqlStrBuilder = new StringBuilder();
         sqlStrBuilder.append("select * from ").append(tableName);
         String sql = sqlStrBuilder.toString();
@@ -59,17 +59,17 @@ class DbApi {
         return response;
     }
 
-    Response readByFilters(String tableName, String filters, Class cls) {
+    Response readByFilters(String tableName, String filters, ArrayList<Object> parameters, Class<? extends Entity> cls) {
         StringBuilder sqlStrBuilder = new StringBuilder();
         sqlStrBuilder.append("select * from ").append(tableName);
         sqlStrBuilder.append(" where ").append(filters);
         String sql = sqlStrBuilder.toString();
-        Response response = read(sql, null, cls);
+        Response response = read(sql, parameters, cls);
 
         return response;
     }
 
-    Response read(String sql, ArrayList<Object> parameters, Class cls) {
+    Response read(String sql, ArrayList<Object> parameters, Class<? extends Entity> cls) {
         ArrayList<Entity> entities = new ArrayList<>();
 
         Response response;

@@ -28,7 +28,6 @@ Thanks,
 */
 
 /*
-drop table game_member;
 drop table game;
 drop table team_member;
 drop table team;
@@ -62,19 +61,12 @@ create table team_member(
 
 create table game (
     id           int     auto_increment,
-	roundNo      tinyint not null,   #--round number of the tournament
+	roundNo      int     not null,   #--round number of the tournament
+	team1        int     not null,
+	team2        int     not null,
+	winner       int,
     constraint pk_game primary key (id),
-	constraint ck_game_roundNo check (roundNo>=1)
+	constraint ck_game_roundNo check (roundNo>=1),
+	constraint ck_game_team check (team1<team2),
+	constraint ck_game_winner check (winner is null or winner in (team1,team2))
 );
-
-#--for each game, there are 2 game members, and only one of it is winner
-create table game_member (
-    id        int     auto_increment,
-	gameId    int     not null,
-	teamId    int     not null,
-	isWinner  boolean not null default false,
-    constraint pk_game_member primary key (id),
-	constraint fk_game_member_gameId foreign key (gameId) references game(id),
-	constraint fk_game_member_teamId foreign key (teamId) references team(id)
-);
-

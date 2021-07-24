@@ -15,14 +15,13 @@ public class TeamMemberRepository implements IRepository {
     private static final String tableName = "team_member";
     private static final Class cls = TeamMember.class;
 
-    public Response readAll() {
+    public Response<TeamMember> readAll() {
         Response response = dbApi.readAll(tableName, cls);
         return response;
     }
 
     public Response write(TeamMember teamMember) {
-        Optional<TeamMember> optionalTeamMember = Optional.of(teamMember);
-        Response response = dbApi.write(optionalTeamMember, tableName);
+        Response response = dbApi.write(Optional.of(teamMember), tableName);
         return response;
     }
 

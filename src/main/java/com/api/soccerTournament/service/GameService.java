@@ -1,13 +1,10 @@
 package com.api.soccerTournament.service;
 
-import com.api.soccerTournament.model.Entity;
 import com.api.soccerTournament.model.Game;
 import com.api.soccerTournament.model.response.Response;
 import com.api.soccerTournament.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 
 @Service
 public class GameService implements IService {

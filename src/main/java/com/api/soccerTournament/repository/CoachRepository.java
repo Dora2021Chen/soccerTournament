@@ -7,16 +7,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CoachRepository extends PersonRepository implements IRepository {
-    private static Integer role = Const.roleCoach;
-    private static final String roleFilter = "role=" + Const.roleCoach;
-
     public Response<Person> readAll() {
-        Response<Person> response = dbApi.readByFilters(tableName, roleFilter, cls);
+        Response<Person> response = readByRole(Const.roleCoach);
         return response;
     }
 
     public Response write(Person person) {
-        Response response = write(person, role);
+        Response response = write(person, Const.roleCoach);
         return response;
     }
 }

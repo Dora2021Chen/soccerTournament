@@ -15,14 +15,13 @@ public class GameRepository implements IRepository {
     private static final String tableName = "game";
     private static final Class cls = Game.class;
 
-    public Response readAll() {
+    public Response<Game> readAll() {
         Response response = dbApi.readAll(tableName, cls);
         return response;
     }
 
     public Response write(Game game) {
-        Optional<Game> optionalGame = Optional.of(game);
-        Response response = dbApi.write(optionalGame, tableName);
+        Response response = dbApi.write(Optional.of(game), tableName);
         return response;
     }
 

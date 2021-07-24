@@ -5,6 +5,7 @@ import com.api.soccerTournament.model.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Repository
@@ -12,14 +13,21 @@ class PersonRepository {
     @Autowired
     protected DbApi dbApi;
 
-    protected static final String tableName = "person";
-    protected static final Class cls = Person.class;
+    private static final String tableName = "person";
+    private static final Class cls = Person.class;
+
+    protected Response<Person> readByRole(Integer role) {
+        String roleFilter = "role=?";
+        ArrayList<Object> parameters = new ArrayList<>();
+        parameters.add(role);
+
+        Response response = dbApi.readByFilters(tableName, roleFilter, parameters, cls);
+        return response;
+    }
 
     protected Response write(Person person, Integer role) {
-        Optional<Person> optionalPerson = Optional.of(person);
         person.role = role;
-
-        Response response = dbApi.write(optionalPerson, tableName);
+        Response response = dbApi.write(Optional.of(person), tableName);
         return response;
     }
 

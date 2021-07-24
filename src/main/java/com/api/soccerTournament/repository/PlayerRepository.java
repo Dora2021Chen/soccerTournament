@@ -7,16 +7,13 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class PlayerRepository extends PersonRepository implements IRepository {
-    private static Integer role = Const.rolePlayer;
-    private static final String roleFilter = "role=" + role;
-
-    public Response readAll() {
-        Response response = dbApi.readByFilters(tableName, roleFilter, cls);
+    public Response<Person> readAll() {
+        Response<Person> response = readByRole(Const.rolePlayer);
         return response;
     }
 
     public Response write(Person person) {
-        Response response = write(person, role);
+        Response response = write(person, Const.rolePlayer);
         return response;
     }
 }
