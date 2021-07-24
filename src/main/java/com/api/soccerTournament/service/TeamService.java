@@ -11,7 +11,7 @@ public class TeamService implements IService {
     @Autowired
     private TeamRepository teamRepository;
 
-    public Response readAll() {
+    public Response<Team> readAll() {
         Response response = teamRepository.readAll();
         return response;
     }

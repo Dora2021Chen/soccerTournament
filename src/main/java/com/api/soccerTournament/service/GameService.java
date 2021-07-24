@@ -11,7 +11,7 @@ public class GameService implements IService {
     @Autowired
     private GameRepository gameRepository;
 
-    public Response readAll() {
+    public Response<Game> readAll() {
         Response response = gameRepository.readAll();
         return response;
     }

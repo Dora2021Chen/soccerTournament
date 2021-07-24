@@ -21,13 +21,20 @@ public class CoachController {
     }
 
     @PostMapping(path = "/write", produces = Const.responseFormat)
-    public Response write(@RequestBody Person person){
-        Response response = coachService.write(person);
+    public Response write(@RequestBody Person coach){
+        if (coach == null) return new Response(Const.statusCodeFailParamNull, "coach");
+        if (coach.name == null) return new Response(Const.statusCodeFailParamNull, "coach.name");
+        if (coach.name.trim().length() == 0) return new Response(Const.statusCodeFailParamEmpty, "team.coach");
+
+        Response response = coachService.write(coach);
         return response;
     }
 
     @PostMapping(path = "/delete", produces = Const.responseFormat)
     public Response delete(@RequestBody Integer id) {
+        if (id == null) return new Response(Const.statusCodeFailParamNull, "id");
+        if (id <= 0) return new Response(Const.statusCodeFailParamInvalid, "id");
+
         Response response = coachService.delete(id);
         return response;
     }

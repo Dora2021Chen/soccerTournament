@@ -11,7 +11,7 @@ public class PlayerService implements IService {
     @Autowired
     private PlayerRepository playerRepository;
 
-    public Response readAll() {
+    public Response<Person> readAll() {
         Response response = playerRepository.readAll();
         return response;
     }
