@@ -14,8 +14,8 @@ public class CoachService implements IService {
     @Autowired
     private CoachRepository coachRepository;
 
-    public Response readAll() {
-        Response response = coachRepository.readAll();
+    public Response<Person> readAll() {
+        Response<Person> response = coachRepository.readAll();
         return response;
     }
 

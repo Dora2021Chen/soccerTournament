@@ -19,8 +19,8 @@ public class CoachController {
     private CoachService coachService;
 
     @GetMapping(path = "/getAll", produces = Const.responseFormat)
-    public Response readAll() {
-        Response response = coachService.readAll();
+    public Response<Person> readAll() {
+        Response<Person> response = coachService.readAll();
         return response;
     }
 

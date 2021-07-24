@@ -76,23 +76,22 @@ class DbApi {
         try {
             Connection connection = getConnection();
             PreparedStatement prepareStatement = connection.prepareStatement(sql);
-            for (int i = 0; i < parameters.size(); i++) {
-                prepareStatement.setObject(i + 1, parameters.get(i));
+            if (parameters != null) {
+                for (int i = 0; i < parameters.size(); i++) {
+                    prepareStatement.setObject(i + 1, parameters.get(i));
+                }
             }
 
             ResultSet rs = prepareStatement.executeQuery();
             ResultSetMetaData resultSetMetaData = prepareStatement.getMetaData();
-            int colCnt = resultSetMetaData.getColumnCount();
-            String[] colNames = new String[colCnt];
-            for (int i = 0; i < colCnt; i++) {
-                colNames[i] = resultSetMetaData.getCatalogName(i);
-            }
 
+            String colName;
             while (rs.next()) {
                 Entity entity = (Entity) cls.newInstance();
-                for (int i = 0; i < colCnt; i++) {
-                    Field field = cls.getField(colNames[i]);
-                    field.set(entity, rs.getObject(colNames[i]));
+                for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
+                    colName = resultSetMetaData.getColumnName(i);
+                    Field field = cls.getField(colName);
+                    field.set(entity, rs.getObject(colName));
                 }
                 entities.add(entity);
             }
@@ -214,12 +213,8 @@ class DbApi {
             PreparedStatement prepareStatement = connection.prepareStatement(sql);
             prepareStatement.setObject(1, id);
 
-            boolean result = prepareStatement.execute();
-            if (result) {
-                response = new Response(Const.statusCodeSucceed);
-            } else {
-                response = new Response(Const.statusCodeFail);
-            }
+            prepareStatement.execute();
+            response = new Response(Const.statusCodeSucceed);
         } catch (Exception ex) {
             response = new Response(Const.statusCodeFail, ex.getMessage());
         }

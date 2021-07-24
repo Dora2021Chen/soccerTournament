@@ -4,10 +4,10 @@ import com.api.soccerTournament.model.Entity;
 
 import java.util.ArrayList;
 
-public class Response {
+public class Response<T extends Entity> {
     public int statusCode;  //0:succeed, 1000:fail
     public String statusMsg;
-    public ArrayList<Entity> entities;
+    public ArrayList<T> entities;
 
     public Response() {
         this.statusCode = Const.statusCodeSucceed;
@@ -21,7 +21,7 @@ public class Response {
         this.entities = new ArrayList<>();
     }
 
-    public Response(int statusCode, ArrayList<Entity> entities) {
+    public Response(int statusCode, ArrayList<T> entities) {
         this.statusCode = statusCode;
         this.statusMsg = Const.statusMap.get(this.statusCode);
         this.entities = entities;
@@ -39,7 +39,7 @@ public class Response {
         }
     }
 
-    public Response(int statusCode, String statusMsg, ArrayList<Entity> entities) {
+    public Response(int statusCode, String statusMsg, ArrayList<T> entities) {
         this.statusCode = statusCode;
         this.entities = entities;
         if ((statusMsg == null) || (statusMsg.length() == 0)) {

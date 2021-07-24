@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class PlayerRepository extends PersonRepository implements IRepository {
-    private static Byte role = Const.rolePlayer;
+    private static Integer role = Const.rolePlayer;
     private static final String roleFilter = "role=" + role;
 
     public Response readAll() {

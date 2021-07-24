@@ -4,5 +4,5 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Person extends Participant {
-    public Byte role;
+    public Integer role;
 }

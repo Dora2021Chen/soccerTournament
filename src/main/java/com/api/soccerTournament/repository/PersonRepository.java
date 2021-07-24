@@ -15,7 +15,7 @@ class PersonRepository {
     protected static final String tableName = "person";
     protected static final Class cls = Person.class;
 
-    protected Response write(Person person, Byte role) {
+    protected Response write(Person person, Integer role) {
         Optional<Person> optionalPerson = Optional.of(person);
         person.role = role;
 

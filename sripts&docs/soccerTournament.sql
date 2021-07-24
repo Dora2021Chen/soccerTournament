@@ -38,7 +38,7 @@ drop table person;
 create table person (
     id           int         auto_increment,
 	name         varchar(50) not null,
-	role         tinyint     not null,   #--0, player, 1, coach, 2, referee, ...
+	role         int         not null,   #--0, player, 1, coach, 2, referee, ...
 	constraint pk_person primary key (id),
 	constraint ck_person_role check (role in (0,1,2))
 );
