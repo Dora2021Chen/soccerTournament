@@ -1,12 +1,9 @@
 package com.api.soccerTournament.repository;
 
-import com.api.soccerTournament.model.Entity;
 import com.api.soccerTournament.model.Person;
 import com.api.soccerTournament.model.response.Const;
 import com.api.soccerTournament.model.response.Response;
 import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
 
 @Repository
 public class PlayerRepository extends PersonRepository implements IRepository {

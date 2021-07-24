@@ -6,5 +6,5 @@ import org.springframework.stereotype.Component;
 public class TeamMember extends Entity {
     public Integer id;
     public Integer teamId;
-    public Integer participantId;
+    public Integer personId;
 }

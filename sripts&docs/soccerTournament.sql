@@ -27,50 +27,28 @@ Aim to have it completed sometime before the end of next week.
 Thanks,
 */
 
-
-#--the country list related to the tournaments
-create table country(
-    id   int          auto_increment,
-	name varchar(100) not null,
-	constraint pk_country primary key (id),
-	constraint uq_country_name unique (name) 
-);
-
-create table tournament(
-    id        int          auto_increment,
-	name      varchar(100) not null,
-	countryId int          not null,
-	startDate datetime     not null,
-	endDate   datetime     not null,
-	constraint pk_tournament primary key (id),
-	constraint uq_tournament_name unique (name) ,
-	constraint fk_tournament_countryId foreign key (countryId) references country(id),
-	constraint ck_tournament_date check (endDate>startDate)
-);
-
+/*
+drop table game_member;
+drop table game;
+drop table team_member;
+drop table team;
+drop table person;
+*/
 
 create table person (
     id           int         auto_increment,
 	name         varchar(50) not null,
 	role         tinyint     not null,   #--0, player, 1, coach, 2, referee, ...
-	countryId    int         not null,
-	tournamentId int         not null,
 	constraint pk_person primary key (id),
-	constraint fk_person_countryId foreign key (countryId) references country(id),
-	constraint fk_person_tournamentId foreign key (tournamentId) references tournament(id),
-	constraint ck_person_role check (role in (1,2,3))
+	constraint ck_person_role check (role in (0,1,2))
 );
 
 
 create table team (
     id           int         auto_increment,
 	name         varchar(50) not null,
-	countryId    int         not null,
-	tournamentId int         not null,
 	constraint pk_team primary key (id),
-	constraint uq_team_name unique (name),
-	constraint fk_team_countryId foreign key (countryId) references country(id),
-	constraint fk_team_tournamentId foreign key (tournamentId) references tournament(id)
+	constraint uq_team_name unique (name)
 );
 
 create table team_member(
@@ -78,17 +56,14 @@ create table team_member(
 	teamId    int     not null,
 	personId  int     not null,
     constraint pk_team_member primary key (id),
-	constraint fk_team_member_teamId foreign key (teamId) references team(id)
+	constraint fk_team_member_teamId foreign key (teamId) references team(id),
 	constraint fk_team_member_personId foreign key (personId) references person(id)
 );
 
 create table game (
     id           int     auto_increment,
 	roundNo      tinyint not null,   #--round number of the tournament
-	tournamentId int     not null,
     constraint pk_game primary key (id),
-	constraint fk_game_countryId foreign key (countryId) references country(id),
-	constraint fk_game_tournamentId foreign key (tournamentId) references tournament(id),
 	constraint ck_game_roundNo check (roundNo>=1)
 );
 

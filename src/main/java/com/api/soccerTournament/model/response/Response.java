@@ -12,13 +12,13 @@ public class Response {
     public Response() {
         this.statusCode = Const.statusCodeSucceed;
         this.statusMsg = Const.statusMap.get(this.statusCode);
-        this.entities = null;
+        this.entities = new ArrayList<>();
     }
 
     public Response(int statusCode) {
         this.statusCode = statusCode;
         this.statusMsg = Const.statusMap.get(this.statusCode);
-        this.entities = null;
+        this.entities = new ArrayList<>();
     }
 
     public Response(int statusCode, ArrayList<Entity> entities) {
@@ -34,7 +34,7 @@ public class Response {
         } else {
             StringBuilder statusMsgBuilder = new StringBuilder();
             statusMsgBuilder.append(Const.statusMap.get(this.statusCode));
-            statusMsgBuilder.append(":").append(statusMsg);
+            statusMsgBuilder.append(": ").append(statusMsg);
             this.statusMsg = statusMsgBuilder.toString();
         }
     }

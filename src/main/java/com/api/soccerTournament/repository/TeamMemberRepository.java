@@ -1,13 +1,10 @@
 package com.api.soccerTournament.repository;
 
-import com.api.soccerTournament.model.Entity;
-import com.api.soccerTournament.model.Team;
 import com.api.soccerTournament.model.TeamMember;
 import com.api.soccerTournament.model.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 @Repository
@@ -25,7 +22,7 @@ public class TeamMemberRepository implements IRepository {
 
     public Response write(TeamMember teamMember) {
         Optional<TeamMember> optionalTeamMember = Optional.of(teamMember);
-        Response response = dbApi.write(optionalTeamMember, tableName, cls);
+        Response response = dbApi.write(optionalTeamMember, tableName);
         return response;
     }
 

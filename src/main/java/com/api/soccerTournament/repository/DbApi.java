@@ -125,12 +125,12 @@ class DbApi {
         return colNames;
     }
 
-    Response write(Optional<? extends Entity> entity, String tableName, Class cls) {
+    Response write(Optional<? extends Entity> optionalEntity, String tableName) {
         Response response;
 
         try {
             Connection connection = getConnection();
-            response = write(connection, entity, tableName, cls);
+            response = write(connection, optionalEntity, tableName);
         } catch (Exception ex) {
             response = new Response(Const.statusCodeFail, ex.getMessage());
         }
@@ -138,42 +138,50 @@ class DbApi {
         return response;
     }
 
-    Response write(Connection connection, Optional<? extends Entity> entity, String tableName, Class cls) {
+    Response write(Connection connection, Optional<? extends Entity> optionalEntity, String tableName) {
         Response response;
-
-        StringBuilder sqlStrBuilder = new StringBuilder();
-        sqlStrBuilder.append("insert into ").append(tableName).append("(");
-
         try {
+            Entity entity = optionalEntity.get();
+            Class cls = optionalEntity.get().getClass();
+
+            StringBuilder sqlStrBuilder = new StringBuilder();
+            sqlStrBuilder.append("insert into ").append(tableName).append("(");
+
             ArrayList<String> colNames = getColNames(tableName);
+
+            StringBuilder paramBuilder = new StringBuilder();
+            paramBuilder.append("(");
             for (int i = 0; i < colNames.size(); i++) {
+                if ((colNames.get(i).equalsIgnoreCase("id")) && (entity.id == null)) {
+                    continue;
+                }
                 sqlStrBuilder.append(colNames.get(i)).append(",");
+                paramBuilder.append("?,");
             }
             sqlStrBuilder.deleteCharAt(sqlStrBuilder.length() - 1).append(")").append("values");
-
-            sqlStrBuilder.append("(");
-            for (int i = 0; i < colNames.size(); i++) {
-                sqlStrBuilder.append("?,");
-            }
-            sqlStrBuilder.deleteCharAt(sqlStrBuilder.length() - 1);
+            sqlStrBuilder.append(paramBuilder).deleteCharAt(sqlStrBuilder.length() - 1);
             sqlStrBuilder.append(")");
-
             String sql = sqlStrBuilder.toString();
-            PreparedStatement prepareStatement = connection.prepareStatement(sql);
+            PreparedStatement prepareStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             Field field;
             int paramCnt = 0;
             for (int i = 0; i < colNames.size(); i++) {
+                if ((colNames.get(i).equalsIgnoreCase("id")) && (entity.id == null)) {
+                    continue;
+                }
                 field = cls.getField(colNames.get(i));
                 Object value = field.get(entity);
                 prepareStatement.setObject(++paramCnt, value);
             }
 
-            boolean result = prepareStatement.execute();
-            if (result) {
-                response = new Response(Const.statusCodeSucceed);
-            } else {
-                response = new Response(Const.statusCodeFail);
+            prepareStatement.execute();
+
+            response = new Response(Const.statusCodeSucceed);
+            ResultSet res = prepareStatement.getGeneratedKeys();
+            while (res.next()) {
+                Integer id = res.getInt(1);
+                response.entities.add(new Entity(id));
             }
         } catch (Exception ex) {
             response = new Response(Const.statusCodeFail, ex.getMessage());

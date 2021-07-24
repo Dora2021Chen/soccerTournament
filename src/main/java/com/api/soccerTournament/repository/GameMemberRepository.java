@@ -22,7 +22,7 @@ public class GameMemberRepository implements IRepository {
 
     public Response write(GameMember gameMember) {
         Optional<GameMember> optionalGameMember = Optional.of(gameMember);
-        Response response = dbApi.write(optionalGameMember, tableName, cls);
+        Response response = dbApi.write(optionalGameMember, tableName);
         return response;
     }
 
