@@ -4,7 +4,6 @@ import com.api.soccerTournament.model.Person;
 import com.api.soccerTournament.model.response.Const;
 import com.api.soccerTournament.model.response.Response;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 @Repository
 public class CoachRepository extends PersonRepository implements IRepository {

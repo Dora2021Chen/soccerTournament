@@ -3,7 +3,6 @@ package com.api.soccerTournament.service;
 import com.api.soccerTournament.model.TeamMember;
 import com.api.soccerTournament.model.response.Response;
 import com.api.soccerTournament.repository.TeamMemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service

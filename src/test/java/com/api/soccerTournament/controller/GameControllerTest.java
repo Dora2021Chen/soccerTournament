@@ -1,6 +1,7 @@
 package com.api.soccerTournament.controller;
 
 import com.api.soccerTournament.model.response.Const;
+import com.api.soccerTournament.model.response.Response;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -12,18 +13,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import com.api.soccerTournament.model.response.Response;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-class TeamControllerTest {
+class GameControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    private String baseUrl = "/api/soccerTournament/team";
+    private String baseUrl = "/api/soccerTournament/game";
 
     Gson gson = new Gson();
 

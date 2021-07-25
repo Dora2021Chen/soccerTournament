@@ -2,7 +2,6 @@ package com.api.soccerTournament.repository;
 
 import com.api.soccerTournament.model.Game;
 import com.api.soccerTournament.model.response.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
