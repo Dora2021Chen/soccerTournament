@@ -4,15 +4,17 @@ import com.api.soccerTournament.model.Person;
 import com.api.soccerTournament.model.response.Const;
 import com.api.soccerTournament.model.response.Response;
 import com.api.soccerTournament.service.PlayerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/soccerTournament/player")
 @CrossOrigin
 public class PlayerController {
-    @Autowired
-    private PlayerService playerService;
+    private final PlayerService playerService;
+
+    public PlayerController(PlayerService playerService) {
+        this.playerService = playerService;
+    }
 
     @GetMapping(path = "/getAll", produces = Const.responseFormat)
     public Response<Person> readAll() {
@@ -21,7 +23,7 @@ public class PlayerController {
     }
 
     @PostMapping(path = "/write", produces = Const.responseFormat)
-    public Response write(@RequestBody Person player){
+    public Response write(@RequestBody Person player) {
         if (player == null) return new Response(Const.statusCodeFailParamNull, "player");
         if (player.name == null) return new Response(Const.statusCodeFailParamNull, "player.name");
         if (player.name.trim().length() == 0) return new Response(Const.statusCodeFailParamEmpty, "player.coach");

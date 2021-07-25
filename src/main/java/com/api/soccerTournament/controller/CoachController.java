@@ -11,8 +11,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/soccerTournament/coach")
 @CrossOrigin
 public class CoachController {
+    private final CoachService coachService;
+
     @Autowired
-    private CoachService coachService;
+    public CoachController(CoachService coachService) {
+        this.coachService = coachService;
+    }
 
     @GetMapping(path = "/getAll", produces = Const.responseFormat)
     public Response<Person> readAll() {
@@ -21,7 +25,7 @@ public class CoachController {
     }
 
     @PostMapping(path = "/write", produces = Const.responseFormat)
-    public Response write(@RequestBody Person coach){
+    public Response write(@RequestBody Person coach) {
         if (coach == null) return new Response(Const.statusCodeFailParamNull, "coach");
         if (coach.name == null) return new Response(Const.statusCodeFailParamNull, "coach.name");
         if (coach.name.trim().length() == 0) return new Response(Const.statusCodeFailParamEmpty, "team.coach");

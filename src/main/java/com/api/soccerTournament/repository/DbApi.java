@@ -246,12 +246,8 @@ class DbApi {
                 }
             }
 
-            boolean result = prepareStatement.execute();
-            if (result) {
-                response = new Response(Const.statusCodeSucceed);
-            } else {
-                response = new Response(Const.statusCodeFail);
-            }
+            prepareStatement.execute();
+            response = new Response(Const.statusCodeSucceed);
         } catch (Exception ex) {
             response = new Response(Const.statusCodeFail, ex.getMessage());
         }

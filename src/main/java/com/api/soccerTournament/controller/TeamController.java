@@ -4,17 +4,17 @@ import com.api.soccerTournament.model.Team;
 import com.api.soccerTournament.model.response.Const;
 import com.api.soccerTournament.model.response.Response;
 import com.api.soccerTournament.service.TeamService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/soccerTournament/team")
 @CrossOrigin
 public class TeamController {
-    @Autowired
-    private TeamService teamService;
+    private final TeamService teamService;
+
+    public TeamController(TeamService teamService) {
+        this.teamService = teamService;
+    }
 
     @GetMapping(path = "/getAll", produces = Const.responseFormat)
     public Response<Team> readAll() {

@@ -10,8 +10,11 @@ import java.util.Optional;
 
 @Repository
 class PersonRepository {
-    @Autowired
-    protected DbApi dbApi;
+    protected final DbApi dbApi;
+
+    public PersonRepository(DbApi dbApi){
+        this.dbApi=dbApi;
+    }
 
     private static final String tableName = "person";
     private static final Class cls = Person.class;

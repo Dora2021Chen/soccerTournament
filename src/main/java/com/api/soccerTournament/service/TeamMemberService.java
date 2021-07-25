@@ -8,8 +8,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TeamMemberService implements IService {
-    @Autowired
-    private TeamMemberRepository teamMemberRepository;
+    private final TeamMemberRepository teamMemberRepository;
+
+    public TeamMemberService(TeamMemberRepository teamMemberRepository) {
+        this.teamMemberRepository = teamMemberRepository;
+    }
 
     public Response<TeamMember> readAll() {
         Response response = teamMemberRepository.readAll();

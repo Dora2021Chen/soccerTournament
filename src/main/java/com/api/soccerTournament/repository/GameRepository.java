@@ -9,8 +9,11 @@ import java.util.Optional;
 
 @Repository
 public class GameRepository implements IRepository {
-    @Autowired
-    private DbApi dbApi;
+    private final DbApi dbApi;
+
+    public GameRepository(DbApi dbApi) {
+        this.dbApi = dbApi;
+    }
 
     private static final String tableName = "game";
     private static final Class cls = Game.class;

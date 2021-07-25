@@ -1,5 +1,6 @@
 package com.api.soccerTournament.service;
 
+import com.api.soccerTournament.controller.CoachController;
 import com.api.soccerTournament.model.Person;
 import com.api.soccerTournament.model.response.Response;
 import com.api.soccerTournament.repository.CoachRepository;
@@ -8,8 +9,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CoachService implements IService {
-    @Autowired
-    private CoachRepository coachRepository;
+    public final CoachRepository coachRepository;
+
+    public CoachService(CoachRepository coachRepository) {
+        this.coachRepository = coachRepository;
+    }
 
     public Response<Person> readAll() {
         Response<Person> response = coachRepository.readAll();

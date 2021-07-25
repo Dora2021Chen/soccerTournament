@@ -2,14 +2,18 @@ package com.api.soccerTournament.service;
 
 import com.api.soccerTournament.model.Game;
 import com.api.soccerTournament.model.response.Response;
+import com.api.soccerTournament.repository.CoachRepository;
 import com.api.soccerTournament.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GameService implements IService {
-    @Autowired
-    private GameRepository gameRepository;
+    public final GameRepository gameRepository;
+
+    public GameService(GameRepository gameRepository) {
+        this.gameRepository = gameRepository;
+    }
 
     public Response<Game> readAll() {
         Response response = gameRepository.readAll();

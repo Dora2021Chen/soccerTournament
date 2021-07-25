@@ -8,8 +8,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PlayerService implements IService {
-    @Autowired
-    private PlayerRepository playerRepository;
+    private final PlayerRepository playerRepository;
+
+    public PlayerService(PlayerRepository playerRepository) {
+        this.playerRepository = playerRepository;
+    }
 
     public Response<Person> readAll() {
         Response response = playerRepository.readAll();

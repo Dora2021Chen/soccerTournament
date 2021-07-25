@@ -7,6 +7,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class PlayerRepository extends PersonRepository implements IRepository {
+    public PlayerRepository(DbApi dbApi) {
+        super(dbApi);
+    }
+
     public Response<Person> readAll() {
         Response<Person> response = readByRole(Const.rolePlayer);
         return response;

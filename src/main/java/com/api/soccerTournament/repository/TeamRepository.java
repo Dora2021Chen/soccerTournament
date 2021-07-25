@@ -9,8 +9,11 @@ import java.util.Optional;
 
 @Repository
 public class TeamRepository implements IRepository {
-    @Autowired
-    private DbApi dbApi;
+    private final DbApi dbApi;
+
+    public TeamRepository(DbApi dbApi) {
+        this.dbApi = dbApi;
+    }
 
     private static final String tableName = "team";
     private static final Class cls = Team.class;

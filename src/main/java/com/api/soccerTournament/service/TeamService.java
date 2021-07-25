@@ -3,13 +3,15 @@ package com.api.soccerTournament.service;
 import com.api.soccerTournament.model.Team;
 import com.api.soccerTournament.model.response.Response;
 import com.api.soccerTournament.repository.TeamRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TeamService implements IService {
-    @Autowired
-    private TeamRepository teamRepository;
+    private final TeamRepository teamRepository;
+
+    public TeamService(TeamRepository teamRepository) {
+        this.teamRepository = teamRepository;
+    }
 
     public Response<Team> readAll() {
         Response response = teamRepository.readAll();
