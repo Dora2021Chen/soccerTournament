@@ -13,8 +13,15 @@ public class CoachService implements IService {
         this.coachRepository = coachRepository;
     }
 
+    @Override
     public Response<Person> readAll() {
         Response<Person> response = coachRepository.readAll();
+        return response;
+    }
+
+    @Override
+    public Response<Person> readById(Integer id) {
+        Response response = coachRepository.readById(id);
         return response;
     }
 
@@ -23,6 +30,7 @@ public class CoachService implements IService {
         return response;
     }
 
+    @Override
     public Response delete(Integer id) {
         Response response = coachRepository.delete(id);
         return response;

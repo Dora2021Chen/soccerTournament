@@ -25,23 +25,17 @@ Aim to have it completed sometime before the end of next week.
  
 
 Thanks,
+
+A Coach will never be a player.
+Players and Coaches cannot belong to multiple teams.
+I’m currently using 1.8.0.212
 */
 
 /*
 drop table game;
-drop table team_member;
-drop table team;
 drop table person;
+drop table team;
 */
-
-create table person (
-    id           int         auto_increment,
-	name         varchar(50) not null,
-	role         int         not null,   #--0, player, 1, coach, 2, referee, ...
-	constraint pk_person primary key (id),
-	constraint ck_person_role check (role in (0,1,2))
-);
-
 
 create table team (
     id           int         auto_increment,
@@ -50,13 +44,16 @@ create table team (
 	constraint uq_team_name unique (name)
 );
 
-create table team_member(
-    id        int     auto_increment,
-	teamId    int     not null,
-	personId  int     not null,
-    constraint pk_team_member primary key (id),
-	constraint fk_team_member_teamId foreign key (teamId) references team(id),
-	constraint fk_team_member_personId foreign key (personId) references person(id)
+create table person (
+    id           int         auto_increment,
+	name         varchar(50) not null,
+	idDocNumber  varchar(50) not null,
+	teamId       int         not null,
+	role         int         not null,   #--0, player, 1, coach, 2, referee, ...
+	constraint pk_person primary key (id),
+	constraint fk_person_teamId foreign key (teamId) references team(id),
+	constraint uq_person_idDocNumber unique (idDocNumber),
+	constraint ck_person_role check (role in (0,1,2))
 );
 
 create table game (
@@ -68,6 +65,7 @@ create table game (
     constraint pk_game primary key (id),
 	constraint fk_game_team1 foreign key (team1) references team(id),
 	constraint fk_game_team2 foreign key (team2) references team(id),
+	constraint uq_game unique (roundNo,team1,team2),
 	constraint ck_game_roundNo check (roundNo>=1),
 	constraint ck_game_team check (team1<team2),
 	constraint ck_game_winner check (winner is null or winner in (team1,team2))

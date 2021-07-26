@@ -50,22 +50,46 @@ class DbApi {
         return dataSource.getConnection();
     }
 
-    Response readAll(String tableName, Class<? extends Entity> cls) {
-        StringBuilder sqlStrBuilder = new StringBuilder();
-        sqlStrBuilder.append("select * from ").append(tableName);
-        String sql = sqlStrBuilder.toString();
-        Response response = read(sql, null, cls);
+    Response readByColumn(String colName, String tableName, Class<? extends Entity> cls, Object colValue) {
+        StringBuilder filterStrBuilder = new StringBuilder();
+        filterStrBuilder.append(colName).append("=?");
+        ArrayList<Object> parameters = new ArrayList<>() {{
+            add(colValue);
+        }};
+        Response response = readByFilters(tableName, cls, filterStrBuilder.toString(), parameters);
+        return response;
+    }
+
+    Response readTable(String tableName, Class<? extends Entity> cls) {
+        Response response = readByFilters(tableName, cls, null, null);
+        return response;
+    }
+
+    Response readByFilters(String tableName, Class<? extends Entity> cls, String filters, ArrayList<Object> parameters) {
+        Response response;
+        try {
+            ArrayList<String> columnNames = getColNames(tableName);
+            StringBuilder sqlStrBuilder = new StringBuilder();
+            sqlStrBuilder.append("select ");
+            for (int i = 0; i < columnNames.size(); i++) {
+                sqlStrBuilder.append(columnNames.get(i)).append(",");
+            }
+            sqlStrBuilder.deleteCharAt(sqlStrBuilder.length() - 1);
+            sqlStrBuilder.append(" from ").append(tableName);
+            if ((filters != null) && (filters.trim().length() > 0)) {
+                sqlStrBuilder.append(" where ").append(filters);
+            }
+
+            response = read(sqlStrBuilder.toString(), parameters, cls);
+        } catch (Exception ex) {
+            response = new Response(Const.statusCodeFail, ex.getMessage());
+        }
 
         return response;
     }
 
-    Response readByFilters(String tableName, String filters, ArrayList<Object> parameters, Class<? extends Entity> cls) {
-        StringBuilder sqlStrBuilder = new StringBuilder();
-        sqlStrBuilder.append("select * from ").append(tableName);
-        sqlStrBuilder.append(" where ").append(filters);
-        String sql = sqlStrBuilder.toString();
-        Response response = read(sql, parameters, cls);
-
+    Response read(String sql, Class<? extends Entity> cls) {
+        Response response = read(sql, null, cls);
         return response;
     }
 
@@ -87,7 +111,7 @@ class DbApi {
 
             String colName;
             while (rs.next()) {
-                Entity entity = (Entity) cls.newInstance();
+                Entity entity = cls.newInstance();
                 for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
                     colName = resultSetMetaData.getColumnName(i);
                     Field field = cls.getField(colName);
@@ -202,23 +226,13 @@ class DbApi {
     }
 
     Response delete(Connection connection, Integer id, String tableName) {
-        Response response;
-
         StringBuilder sqlStrBuilder = new StringBuilder();
         sqlStrBuilder.append("delete from ").append(tableName).append(" where id=?");
+        ArrayList<Object> parameters = new ArrayList<>() {{
+            add(id);
+        }};
 
-        String sql = sqlStrBuilder.toString();
-
-        try {
-            PreparedStatement prepareStatement = connection.prepareStatement(sql);
-            prepareStatement.setObject(1, id);
-
-            prepareStatement.execute();
-            response = new Response(Const.statusCodeSucceed);
-        } catch (Exception ex) {
-            response = new Response(Const.statusCodeFail, ex.getMessage());
-        }
-
+        Response response = executeNonQuery(connection, sqlStrBuilder.toString(), parameters);
         return response;
     }
 

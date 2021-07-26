@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/soccerTournament/game")
 @CrossOrigin
-public class GameController {
+public class GameController implements IController {
     private final GameService gameService;
 
     public GameController(GameService gameService) {
@@ -22,6 +22,13 @@ public class GameController {
         return response;
     }
 
+    @PostMapping(path = "/getById", produces = Const.responseFormat)
+    @Override
+    public Response<Game> readById(@RequestBody Integer id) {
+        Response response = gameService.readById(id);
+        return response;
+    }
+
     @PostMapping(path = "/write", produces = Const.responseFormat)
     public Response write(@RequestBody Game game) {
         if (game == null) return new Response(Const.statusCodeFailParamNull, "game");
@@ -31,6 +38,7 @@ public class GameController {
         if (game.roundNo <= 0) return new Response(Const.statusCodeFailParamInvalid, "game.roundNo");
         if (game.team1 <= 0) return new Response(Const.statusCodeFailParamInvalid, "game.team1");
         if (game.team2 <= 0) return new Response(Const.statusCodeFailParamInvalid, "game.team2");
+        if (game.team1 == game.team2) return new Response(Const.statusCodeFailParamInvalid, "game.team1==game.team2");
         if ((game.winner != null) && ((game.winner != game.team1) & (game.winner != game.team2)))
             return new Response(Const.statusCodeFailParamInvalid, "game.winner");
 

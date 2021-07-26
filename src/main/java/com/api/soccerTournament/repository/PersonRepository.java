@@ -1,35 +1,69 @@
 package com.api.soccerTournament.repository;
 
 import com.api.soccerTournament.model.Person;
+import com.api.soccerTournament.model.response.Const;
 import com.api.soccerTournament.model.response.Response;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 @Repository
-class PersonRepository {
-    protected final DbApi dbApi;
+class PersonRepository extends ParticipantRepository {
+    protected final TeamRepository teamRepository;
 
-    public PersonRepository(DbApi dbApi){
-        this.dbApi=dbApi;
+    public PersonRepository(DbApi dbApi, TeamRepository teamRepository) {
+        super(dbApi);
+        this.teamRepository = teamRepository;
     }
 
     private static final String tableName = "person";
     private static final Class cls = Person.class;
 
-    protected Response<Person> readByRole(Integer role) {
-        String roleFilter = "role=?";
-        ArrayList<Object> parameters = new ArrayList<>();
-        parameters.add(role);
+    protected Response readByRole(Integer role) {
+        String colName = "role";
+        Response response = dbApi.readByColumn(colName, tableName, cls, role);
+        return response;
+    }
 
-        Response response = dbApi.readByFilters(tableName, roleFilter, parameters, cls);
+    public Response readById(Integer id) {
+        Response response = readById(id, tableName, cls);
+        return response;
+    }
+
+    protected Response readByIdDocNumber(String idDocNumber) {
+        String columnName = "idDocNumber";
+        Response response = dbApi.readByColumn(columnName, tableName, cls, idDocNumber);
         return response;
     }
 
     protected Response write(Person person, Integer role) {
-        person.role = role;
-        Response response = dbApi.write(Optional.of(person), tableName);
+        person.setRole(role);
+        Response response = readByIdDocNumber(person.idDocNumber);
+        if (response.statusCode != Const.statusCodeSucceed) {
+            return response;
+        }
+
+        if (response.entities.size() > 0) {
+            if (person.id == null) {
+                return new Response(Const.statusCodeFailTeamNameExists);
+            }
+
+            Person personOld = (Person) response.getEntity();
+            if (personOld.id != person.id) {
+                return new Response(Const.statusCodeFailTeamNameExists);
+            }
+        }
+
+        response = teamRepository.readById(person.teamId);
+        if (response.statusCode != Const.statusCodeSucceed) {
+            return response;
+        }
+
+        if (response.entities.size() == 0) {
+            return new Response(Const.statusCodeFailTeamNotExists);
+        }
+
+        response = dbApi.write(Optional.of(person), tableName);
         return response;
     }
 

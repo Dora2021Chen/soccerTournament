@@ -1,5 +1,6 @@
 package com.api.soccerTournament.service;
 
+import com.api.soccerTournament.model.Entity;
 import com.api.soccerTournament.model.Person;
 import com.api.soccerTournament.model.response.Response;
 import com.api.soccerTournament.repository.PlayerRepository;
@@ -13,8 +14,15 @@ public class PlayerService implements IService {
         this.playerRepository = playerRepository;
     }
 
+    @Override
     public Response<Person> readAll() {
         Response response = playerRepository.readAll();
+        return response;
+    }
+
+    @Override
+    public Response<? extends Entity> readById(Integer id) {
+        Response response = playerRepository.readById(id);
         return response;
     }
 
@@ -23,6 +31,7 @@ public class PlayerService implements IService {
         return response;
     }
 
+    @Override
     public Response delete(Integer id) {
         Response response = playerRepository.delete(id);
         return response;

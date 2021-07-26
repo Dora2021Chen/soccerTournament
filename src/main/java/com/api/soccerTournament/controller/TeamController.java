@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/soccerTournament/team")
 @CrossOrigin
-public class TeamController {
+public class TeamController implements IController {
     private final TeamService teamService;
 
     public TeamController(TeamService teamService) {
@@ -19,6 +19,13 @@ public class TeamController {
     @GetMapping(path = "/getAll", produces = Const.responseFormat)
     public Response<Team> readAll() {
         Response response = teamService.readAll();
+        return response;
+    }
+
+    @PostMapping(path = "/getById", produces = Const.responseFormat)
+    @Override
+    public Response<Team> readById(@RequestBody Integer id) {
+        Response response = teamService.readById(id);
         return response;
     }
 

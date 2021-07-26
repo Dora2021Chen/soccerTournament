@@ -6,13 +6,14 @@ import com.api.soccerTournament.model.response.Response;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class CoachRepository extends PersonRepository implements IRepository {
-    public CoachRepository(DbApi dbApi) {
-        super(dbApi);
+public class CoachRepository extends PersonRepository implements IBaseRepository {
+    public CoachRepository(DbApi dbApi, TeamRepository teamRepository) {
+        super(dbApi, teamRepository);
     }
 
-    public Response<Person> readAll() {
-        Response<Person> response = readByRole(Const.roleCoach);
+    @Override
+    public Response readAll() {
+        Response response = readByRole(Const.roleCoach);
         return response;
     }
 

@@ -51,4 +51,12 @@ public class Response<T extends Entity> {
             this.statusMsg = statusMsgBuilder.toString();
         }
     }
+
+    public Entity getEntity() {
+        if (entities == null) {
+            return null;
+        }
+
+        return entities.get(0);
+    }
 }

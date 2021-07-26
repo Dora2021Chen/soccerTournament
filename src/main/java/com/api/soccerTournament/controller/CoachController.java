@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/soccerTournament/coach")
 @CrossOrigin
-public class CoachController {
+public class CoachController implements IController {
     private final CoachService coachService;
 
     @Autowired
@@ -20,7 +20,14 @@ public class CoachController {
 
     @GetMapping(path = "/getAll", produces = Const.responseFormat)
     public Response<Person> readAll() {
-        Response<Person> response = coachService.readAll();
+        Response response = coachService.readAll();
+        return response;
+    }
+
+    @PostMapping(path = "/getById", produces = Const.responseFormat)
+    @Override
+    public Response<Person> readById(@RequestBody Integer id) {
+        Response response = coachService.readById(id);
         return response;
     }
 
