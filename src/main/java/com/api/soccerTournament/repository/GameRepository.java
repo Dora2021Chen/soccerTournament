@@ -20,9 +20,9 @@ public class GameRepository extends BaseRepository implements IBaseRepository {
 
     private static final String tableName = "game";
     private static final Class cls = Game.class;
+    private static final String sqlReadAll;
 
-    @Override
-    public Response readAll() {
+    static {
         StringBuilder sqlStrBuilder = new StringBuilder();
         sqlStrBuilder.append("select a.id, roundNo, team1, team2, winner, ")
                 .append("b.name team1Name, c.name team2Name, ")
@@ -34,9 +34,12 @@ public class GameRepository extends BaseRepository implements IBaseRepository {
                 .append("inner join team b on a.team1=b.id ")
                 .append("inner join team c on a.team2=c.id");
 
-        String sql = sqlStrBuilder.toString();
-        System.out.println(sql);
-        Response response = dbApi.read(sql, cls);
+        sqlReadAll = sqlStrBuilder.toString();
+    }
+
+    @Override
+    public Response readAll() {
+        Response response = dbApi.read(sqlReadAll, cls);
         return response;
     }
 
