@@ -3,6 +3,7 @@ package com.api.soccerTournament.repository;
 import com.api.soccerTournament.model.Entity;
 import com.api.soccerTournament.model.response.Const;
 import com.api.soccerTournament.model.response.Response;
+import com.api.soccerTournament.utility.Utility;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,8 @@ import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Repository
 class DbApi {
@@ -31,8 +34,7 @@ class DbApi {
     private String mySqlPassword;
 
     private static HikariDataSource dataSource = null;
-
-    //private static int connectionGetCnt = 0;
+    private static Lock lock = new ReentrantLock();
 
     private void initialize() {
         HikariConfig config = new HikariConfig();
@@ -43,7 +45,7 @@ class DbApi {
         config.setJdbcUrl(mySqlUrl);
         config.setUsername(mySqlUsername);
         config.setPassword(mySqlPassword);
-        config.setMaximumPoolSize(60);
+        config.setMaximumPoolSize(5);
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
@@ -52,17 +54,18 @@ class DbApi {
     }
 
     Connection getConnection() throws SQLException {
+        lock.lock();
         if (dataSource == null) {
-            System.out.println("initialize...");
-            initialize();
-        } else if (dataSource.isClosed()) {
-            System.out.println("isClosed: initialize...");
+            Utility.printStr("initialize...");
             initialize();
         }
+        if (dataSource.isClosed()) {
+            Utility.printStr("isClosed: initialize...");
+            initialize();
+        }
+        lock.unlock();
 
         Connection connection = dataSource.getConnection();
-        //connectionGetCnt++;
-        //Utility.printGsonStr("connectionGetCnt: " + connectionGetCnt);
         return connection;
     }
 
