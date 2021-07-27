@@ -3,6 +3,7 @@ package com.api.soccerTournament.repository;
 import com.api.soccerTournament.model.Entity;
 import com.api.soccerTournament.model.response.Const;
 import com.api.soccerTournament.model.response.Response;
+import com.api.soccerTournament.utility.Utility;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,12 +30,14 @@ class DbApi {
 
     private static HikariDataSource dataSource = null;
 
+    //private static int connectionGetCnt = 0;
+
     private void initialize() {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(mySqlUrl);
         config.setUsername(mySqlUsername);
         config.setPassword(mySqlPassword);
-        config.setDriverClassName("com.mysql.jdbc.Driver");
+        config.setMaximumPoolSize(60);
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
@@ -44,10 +47,17 @@ class DbApi {
 
     Connection getConnection() throws SQLException {
         if (dataSource == null) {
+            System.out.println("initialize...");
+            initialize();
+        } else if (dataSource.isClosed()) {
+            System.out.println("isClosed: initialize...");
             initialize();
         }
 
-        return dataSource.getConnection();
+        Connection connection = dataSource.getConnection();
+        //connectionGetCnt++;
+        //Utility.printGsonStr("connectionGetCnt: " + connectionGetCnt);
+        return connection;
     }
 
     Response readByColumn(String colName, String tableName, Class<? extends Entity> cls, Object colValue) {
@@ -67,8 +77,8 @@ class DbApi {
 
     Response readByFilters(String tableName, Class<? extends Entity> cls, String filters, ArrayList<Object> parameters) {
         Response response;
-        try {
-            ArrayList<String> columnNames = getColNames(tableName);
+        try (Connection connection = getConnection()) {
+            ArrayList<String> columnNames = getColNames(connection, tableName);
             StringBuilder sqlStrBuilder = new StringBuilder();
             sqlStrBuilder.append("select ");
             for (int i = 0; i < columnNames.size(); i++) {
@@ -94,11 +104,19 @@ class DbApi {
     }
 
     Response read(String sql, ArrayList<Object> parameters, Class<? extends Entity> cls) {
+        try (Connection connection = getConnection()) {
+            Response response = read(connection, sql, parameters, cls);
+            return response;
+        } catch (Exception ex) {
+            return new Response(Const.statusCodeFail, ex.getMessage());
+        }
+    }
+
+    Response read(Connection connection, String sql, ArrayList<Object> parameters, Class<? extends Entity> cls) {
         ArrayList<Entity> entities = new ArrayList<>();
 
         Response response;
         try {
-            Connection connection = getConnection();
             PreparedStatement prepareStatement = connection.prepareStatement(sql);
             if (parameters != null) {
                 for (int i = 0; i < parameters.size(); i++) {
@@ -129,31 +147,31 @@ class DbApi {
         return response;
     }
 
-    private ArrayList<String> getColNames(String tableName) throws SQLException {
+    private ArrayList<String> getColNames(Connection connection, String tableName) throws SQLException {
         ArrayList<String> colNames = new ArrayList<>();
         StringBuilder sqlStrBuilder = new StringBuilder();
         sqlStrBuilder.append("select column_name from information_schema.columns\n");
-        sqlStrBuilder.append("where table_schema=? and table_name=?");
+        sqlStrBuilder.append("where table_schema='").append(mySqlDb).append("' and table_name=?");
         String sql = sqlStrBuilder.toString();
 
-        Connection connection = getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setObject(1, mySqlDb);
-        preparedStatement.setObject(2, tableName);
+        preparedStatement.setObject(1, tableName);
 
         ResultSet rs = preparedStatement.executeQuery();
         while (rs.next()) {
             colNames.add(rs.getString(1));
         }
+
         return colNames;
     }
 
     Response write(Optional<? extends Entity> optionalEntity, String tableName) {
         Response response;
 
-        try {
-            Connection connection = getConnection();
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
             response = write(connection, optionalEntity, tableName);
+            connection.commit();
         } catch (Exception ex) {
             response = new Response(Const.statusCodeFail, ex.getMessage());
         }
@@ -161,53 +179,49 @@ class DbApi {
         return response;
     }
 
-    Response write(Connection connection, Optional<? extends Entity> optionalEntity, String tableName) {
+    Response write(Connection connection, Optional<? extends Entity> optionalEntity, String tableName) throws SQLException, NoSuchFieldException, IllegalAccessException {
         Response response;
-        try {
-            Entity entity = optionalEntity.get();
-            Class cls = optionalEntity.get().getClass();
+        Entity entity = optionalEntity.get();
+        Class cls = optionalEntity.get().getClass();
 
-            StringBuilder sqlStrBuilder = new StringBuilder();
-            sqlStrBuilder.append("insert into ").append(tableName).append("(");
+        StringBuilder sqlStrBuilder = new StringBuilder();
+        sqlStrBuilder.append("insert into ").append(tableName).append("(");
 
-            ArrayList<String> colNames = getColNames(tableName);
+        ArrayList<String> colNames = getColNames(connection, tableName);
 
-            StringBuilder paramBuilder = new StringBuilder();
-            paramBuilder.append("(");
-            for (int i = 0; i < colNames.size(); i++) {
-                if ((colNames.get(i).equalsIgnoreCase("id")) && (entity.id == null)) {
-                    continue;
-                }
-                sqlStrBuilder.append(colNames.get(i)).append(",");
-                paramBuilder.append("?,");
+        StringBuilder paramBuilder = new StringBuilder();
+        paramBuilder.append("(");
+        for (int i = 0; i < colNames.size(); i++) {
+            if ((colNames.get(i).equalsIgnoreCase("id")) && (entity.id == null)) {
+                continue;
             }
-            sqlStrBuilder.deleteCharAt(sqlStrBuilder.length() - 1).append(")").append("values");
-            sqlStrBuilder.append(paramBuilder).deleteCharAt(sqlStrBuilder.length() - 1);
-            sqlStrBuilder.append(")");
-            String sql = sqlStrBuilder.toString();
-            PreparedStatement prepareStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            sqlStrBuilder.append(colNames.get(i)).append(",");
+            paramBuilder.append("?,");
+        }
+        sqlStrBuilder.deleteCharAt(sqlStrBuilder.length() - 1).append(")").append("values");
+        sqlStrBuilder.append(paramBuilder).deleteCharAt(sqlStrBuilder.length() - 1);
+        sqlStrBuilder.append(")");
+        String sql = sqlStrBuilder.toString();
 
-            Field field;
-            int paramCnt = 0;
-            for (int i = 0; i < colNames.size(); i++) {
-                if ((colNames.get(i).equalsIgnoreCase("id")) && (entity.id == null)) {
-                    continue;
-                }
-                field = cls.getField(colNames.get(i));
-                Object value = field.get(entity);
-                prepareStatement.setObject(++paramCnt, value);
+        PreparedStatement prepareStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        Field field;
+        int paramCnt = 0;
+        for (int i = 0; i < colNames.size(); i++) {
+            if ((colNames.get(i).equalsIgnoreCase("id")) && (entity.id == null)) {
+                continue;
             }
+            field = cls.getField(colNames.get(i));
+            Object value = field.get(entity);
+            prepareStatement.setObject(++paramCnt, value);
+        }
 
-            prepareStatement.execute();
+        prepareStatement.execute();
 
-            response = new Response(Const.statusCodeSucceed);
-            ResultSet res = prepareStatement.getGeneratedKeys();
-            while (res.next()) {
-                Integer id = res.getInt(1);
-                response.entities.add(new Entity(id));
-            }
-        } catch (Exception ex) {
-            response = new Response(Const.statusCodeFail, ex.getMessage());
+        response = new Response(Const.statusCodeSucceed);
+        ResultSet res = prepareStatement.getGeneratedKeys();
+        while (res.next()) {
+            Integer id = res.getInt(1);
+            response.entities.add(new Entity(id));
         }
 
         return response;
@@ -217,7 +231,9 @@ class DbApi {
         Response response;
         try {
             Connection connection = getConnection();
+            connection.setAutoCommit(false);
             response = delete(connection, id, tableName);
+            connection.commit();
         } catch (Exception ex) {
             response = new Response(Const.statusCodeFail, ex.getMessage());
         }
@@ -240,7 +256,9 @@ class DbApi {
         Response response;
         try {
             Connection connection = getConnection();
+            connection.setAutoCommit(false);
             response = executeNonQuery(connection, sql, parameters);
+            connection.commit();
         } catch (Exception ex) {
             response = new Response(Const.statusCodeFail, ex.getMessage());
         }

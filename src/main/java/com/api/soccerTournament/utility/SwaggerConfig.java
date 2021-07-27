@@ -1,4 +1,4 @@
-package com.api.soccerTournament.Utility;
+package com.api.soccerTournament.utility;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

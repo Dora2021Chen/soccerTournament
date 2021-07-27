@@ -4,6 +4,7 @@ import com.api.soccerTournament.model.Entity;
 import com.api.soccerTournament.model.Team;
 import com.api.soccerTournament.model.response.Response;
 import com.api.soccerTournament.repository.TeamRepository;
+import com.api.soccerTournament.utility.Utility;
 import org.springframework.stereotype.Service;
 
 @Service

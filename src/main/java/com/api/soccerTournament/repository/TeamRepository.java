@@ -3,6 +3,7 @@ package com.api.soccerTournament.repository;
 import com.api.soccerTournament.model.Team;
 import com.api.soccerTournament.model.response.Const;
 import com.api.soccerTournament.model.response.Response;
+import com.api.soccerTournament.utility.Utility;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -36,6 +37,7 @@ public class TeamRepository extends ParticipantRepository implements IBaseReposi
     public Response write(Team team) {
         Response response = readByName(team.name);
         if (response.statusCode != Const.statusCodeSucceed) {
+            Utility.printGsonStr(response);
             return response;
         }
 

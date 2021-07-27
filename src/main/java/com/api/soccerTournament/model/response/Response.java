@@ -37,6 +37,7 @@ public class Response<T extends Entity> {
             statusMsgBuilder.append(": ").append(statusMsg);
             this.statusMsg = statusMsgBuilder.toString();
         }
+        this.entities = new ArrayList<>();
     }
 
     public Response(int statusCode, String statusMsg, ArrayList<T> entities) {
@@ -53,7 +54,7 @@ public class Response<T extends Entity> {
     }
 
     public Entity getEntity() {
-        if (entities == null) {
+        if ((entities == null) || (entities.size() == 0)) {
             return null;
         }
 
