@@ -1,6 +1,7 @@
 package com.api.soccerTournament.repository;
 
 import com.api.soccerTournament.model.Person;
+import com.api.soccerTournament.model.PersonInternal;
 import com.api.soccerTournament.model.response.Const;
 import com.api.soccerTournament.model.response.Response;
 import org.springframework.stereotype.Repository;
@@ -17,27 +18,27 @@ class PersonRepository extends ParticipantRepository {
     }
 
     private static final String tableName = "person";
-    private static final Class cls = Person.class;
+    private static final Class clsOutput = Person.class;
 
     protected Response readByRole(Byte role) {
         String colName = "role";
-        Response response = dbApi.readByColumn(colName, tableName, cls, role);
+        Response response = dbApi.readByColumn(colName, tableName, clsOutput, role);
         return response;
     }
 
     public Response readById(Integer id) {
-        Response response = readById(id, tableName, cls);
+        Response response = readById(id, tableName, clsOutput);
         return response;
     }
 
     protected Response readByIdDocNumber(String idDocNumber) {
         String columnName = "idDocNumber";
-        Response response = dbApi.readByColumn(columnName, tableName, cls, idDocNumber);
+        Response response = dbApi.readByColumn(columnName, tableName, clsOutput, idDocNumber);
         return response;
     }
 
     protected Response write(Person person, Byte role) {
-        person.setRole(role);
+        PersonInternal personInternal = new PersonInternal(person, role);
         Response response = readByIdDocNumber(person.idDocNumber);
         if (response.statusCode != Const.statusCodeSucceed) {
             return response;
@@ -63,7 +64,7 @@ class PersonRepository extends ParticipantRepository {
             return new Response(Const.statusCodeFailTeamNotExists);
         }
 
-        response = dbApi.write(Optional.of(person), tableName);
+        response = dbApi.write(Optional.of(personInternal), tableName);
         return response;
     }
 

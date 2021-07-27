@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -45,7 +46,7 @@ class DbApi {
         config.setJdbcUrl(mySqlUrl);
         config.setUsername(mySqlUsername);
         config.setPassword(mySqlPassword);
-        config.setMaximumPoolSize(5);
+        config.setMaximumPoolSize(50);
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
@@ -139,11 +140,20 @@ class DbApi {
             String colName;
             Object propertyVal;
             Byte propertyValByte;
+            HashMap<String, Field> colFieldMap = new HashMap<>();
+            Field field;
+            for (int i = 0; i < cls.getFields().length; i++) {
+                field = cls.getFields()[i];
+                colFieldMap.put(field.getName(), field);
+            }
             while (rs.next()) {
-                Entity entity = cls.newInstance();
+                Entity entity = cls.getDeclaredConstructor().newInstance();
                 for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
                     colName = resultSetMetaData.getColumnLabel(i);
-                    Field field = cls.getField(colName);
+                    if (!colFieldMap.containsKey(colName)) {
+                        continue;
+                    }
+                    field = colFieldMap.get(colName);
 
                     propertyVal = rs.getObject(colName);
                     if (field.getType().equals(Byte.class)) {
