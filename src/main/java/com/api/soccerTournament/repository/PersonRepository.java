@@ -19,7 +19,7 @@ class PersonRepository extends ParticipantRepository {
     private static final String tableName = "person";
     private static final Class cls = Person.class;
 
-    protected Response readByRole(Integer role) {
+    protected Response readByRole(Byte role) {
         String colName = "role";
         Response response = dbApi.readByColumn(colName, tableName, cls, role);
         return response;
@@ -36,7 +36,7 @@ class PersonRepository extends ParticipantRepository {
         return response;
     }
 
-    protected Response write(Person person, Integer role) {
+    protected Response write(Person person, Byte role) {
         person.setRole(role);
         Response response = readByIdDocNumber(person.idDocNumber);
         if (response.statusCode != Const.statusCodeSucceed) {

@@ -22,10 +22,21 @@ public class GameController implements IController {
         return response;
     }
 
-    @PostMapping(path = "/getById", produces = Const.responseFormat)
+    @GetMapping(path = "/getById", produces = Const.responseFormat)
     @Override
-    public Response<Game> readById(@RequestBody Integer id) {
+    public Response<Game> readById(@RequestParam Integer id) {
         Response response = gameService.readById(id);
+        return response;
+    }
+
+    @PutMapping(path = "/setGameResult", produces = Const.responseFormat)
+    public Response<Game> setGameResult(@RequestParam Integer id, @RequestParam Integer winner) {
+        if (id == null) return new Response(Const.statusCodeFailParamNull, "id");
+        if (winner == null) return new Response(Const.statusCodeFailParamNull, "winner");
+        if (id <= 0) return new Response(Const.statusCodeFailParamInvalid, "id");
+        if (winner <= 0) return new Response(Const.statusCodeFailParamInvalid, "winner");
+
+        Response response = gameService.setGameResult(id, winner);
         return response;
     }
 
@@ -46,8 +57,8 @@ public class GameController implements IController {
         return response;
     }
 
-    @PostMapping(path = "/delete", produces = Const.responseFormat)
-    public Response delete(@RequestBody Integer id) {
+    @DeleteMapping(path = "/delete", produces = Const.responseFormat)
+    public Response delete(@RequestParam Integer id) {
         if (id == null) return new Response(Const.statusCodeFailParamNull, "id");
         if (id <= 0) return new Response(Const.statusCodeFailParamInvalid, "id");
 

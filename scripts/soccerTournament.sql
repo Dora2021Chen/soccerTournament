@@ -49,7 +49,7 @@ create table person (
 	name         varchar(50) not null,
 	idDocNumber  varchar(50) not null,
 	teamId       int         not null,
-	role         int         not null,   #--0, player, 1, coach, 2, referee, ...
+	role         tinyint     not null,   #--0, player, 1, coach, 2, referee, ...
 	constraint pk_person primary key (id),
 	constraint fk_person_teamId foreign key (teamId) references team(id),
 	constraint uq_person_idDocNumber unique (idDocNumber),

@@ -24,17 +24,19 @@ public class GameRepository extends BaseRepository implements IBaseRepository {
     @Override
     public Response readAll() {
         StringBuilder sqlStrBuilder = new StringBuilder();
-        sqlStrBuilder.append("select a.id, roundNo, team1, team2, winner,\n")
-                .append("b.name team1Name, c.name team2Name,\n")
-                .append("case when winner=team1 then b.name\n")
-                .append("\twhen winner=team2 then c.name\n")
-                .append("\telse null\n")
-                .append("end winnerName\n")
-                .append("from game a\n")
-                .append("inner join team b on a.team1=b.id\n")
-                .append("inner join team c on a.team2=c.id;");
+        sqlStrBuilder.append("select a.id, roundNo, team1, team2, winner, ")
+                .append("b.name team1Name, c.name team2Name, ")
+                .append("case when winner=team1 then b.name ")
+                .append("when winner=team2 then c.name ")
+                .append("else null ")
+                .append("end winnerName ")
+                .append("from game a ")
+                .append("inner join team b on a.team1=b.id ")
+                .append("inner join team c on a.team2=c.id");
 
-        Response response = dbApi.read(sqlStrBuilder.toString(), cls);
+        String sql = sqlStrBuilder.toString();
+        System.out.println(sql);
+        Response response = dbApi.read(sql, cls);
         return response;
     }
 
@@ -44,7 +46,7 @@ public class GameRepository extends BaseRepository implements IBaseRepository {
         return response;
     }
 
-    public Response read(Integer roundNo, Integer team1, Integer team2) {
+    public Response read(Byte roundNo, Integer team1, Integer team2) {
         String filters = "roundNo=? and team1=? and team2=?";
         ArrayList<Object> parameters = new ArrayList<>() {{
             add(roundNo);
@@ -53,6 +55,32 @@ public class GameRepository extends BaseRepository implements IBaseRepository {
         }};
 
         Response response = dbApi.readByFilters(tableName, cls, filters, parameters);
+        return response;
+    }
+
+    public Response setGameResult(Integer id, Integer winner) {
+        String sql = "update game set winner=? where id=?";
+
+        Response response = readById(id);
+        if (response.statusCode != 0) {
+            return response;
+        }
+
+        if (response.entities.size() == 0) {
+            return new Response(Const.statusCodeFailGameNotExists);
+        }
+
+        Game game = (Game) response.getEntity();
+        if ((winner != game.team1) || (winner != game.team2)) {
+            return new Response(Const.statusCodeFailParamInvalid, "winner");
+        }
+
+        ArrayList<Object> parameters = new ArrayList<>() {{
+            add(winner);
+            add(id);
+        }};
+
+        response = dbApi.executeNonQuery(sql, parameters);
         return response;
     }
 

@@ -26,6 +26,11 @@ public class GameService implements IService {
         return response;
     }
 
+    public Response setGameResult(Integer id, Integer winner) {
+        Response response = gameRepository.setGameResult(id, winner);
+        return response;
+    }
+
     public Response write(Game game) {
         Response response = gameRepository.write(game);
         return response;

@@ -12,6 +12,7 @@ public interface Const {
     int statusCodeFailPersonIdDocNumberExists = 1101;
     int statusCodeFailGameExists = 1102;
     int statusCodeFailTeamNotExists = 1200;
+    int statusCodeFailGameNotExists = 1201;
 
     HashMap<Integer, String> statusMap = new HashMap<Integer, String>() {{
         put(statusCodeSucceed, "succeed");
@@ -23,11 +24,12 @@ public interface Const {
         put(statusCodeFailPersonIdDocNumberExists, "idDocNumber exists");
         put(statusCodeFailGameExists, "team exists");
         put(statusCodeFailTeamNotExists, "team not exists");
+        put(statusCodeFailGameNotExists, "game not exists");
     }};
 
     //0, player, 1, coach, 2, referee, ...
-    int rolePlayer = 0;
-    int roleCoach = 1;
+    byte rolePlayer = 0;
+    byte roleCoach = 1;
     int roleReferee = 2;
 
     String responseFormat = "application/json";

@@ -3,7 +3,6 @@ package com.api.soccerTournament.repository;
 import com.api.soccerTournament.model.Entity;
 import com.api.soccerTournament.model.response.Const;
 import com.api.soccerTournament.model.response.Response;
-import com.api.soccerTournament.utility.Utility;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,8 +15,11 @@ import java.util.Optional;
 
 @Repository
 class DbApi {
-    @Value("${mySqlUrl}")
-    private String mySqlUrl;
+    @Value("${mySqlHost}")
+    private String mySqlHost;
+
+    @Value("${mySqlPort}")
+    private String mySqlPort;
 
     @Value("${mySqlDb}")
     private String mySqlDb;
@@ -34,6 +36,10 @@ class DbApi {
 
     private void initialize() {
         HikariConfig config = new HikariConfig();
+        StringBuilder urlBuilder = new StringBuilder();
+        urlBuilder.append("jdbc:mysql://").append(mySqlHost).append(":").append(mySqlPort);
+        urlBuilder.append("/").append(mySqlDb);
+        String mySqlUrl = urlBuilder.toString();
         config.setJdbcUrl(mySqlUrl);
         config.setUsername(mySqlUsername);
         config.setPassword(mySqlPassword);
@@ -128,12 +134,21 @@ class DbApi {
             ResultSetMetaData resultSetMetaData = prepareStatement.getMetaData();
 
             String colName;
+            Object propertyVal;
+            Byte propertyValByte;
             while (rs.next()) {
                 Entity entity = cls.newInstance();
                 for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
-                    colName = resultSetMetaData.getColumnName(i);
+                    colName = resultSetMetaData.getColumnLabel(i);
                     Field field = cls.getField(colName);
-                    field.set(entity, rs.getObject(colName));
+
+                    propertyVal = rs.getObject(colName);
+                    if (field.getType().equals(Byte.class)) {
+                        propertyValByte = Byte.valueOf(propertyVal.toString());
+                        field.set(entity, propertyValByte);
+                    } else {
+                        field.set(entity, propertyVal);
+                    }
                 }
                 entities.add(entity);
             }

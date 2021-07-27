@@ -22,9 +22,9 @@ public class PlayerController implements IController {
         return response;
     }
 
-    @PostMapping(path = "/getById", produces = Const.responseFormat)
+    @GetMapping(path = "/getById", produces = Const.responseFormat)
     @Override
-    public Response<Person> readById(@RequestBody Integer id) {
+    public Response<Person> readById(@RequestParam Integer id) {
         Response response = playerService.readById(id);
         return response;
     }
@@ -39,8 +39,8 @@ public class PlayerController implements IController {
         return response;
     }
 
-    @PostMapping(path = "/delete", produces = Const.responseFormat)
-    public Response delete(@RequestBody Integer id) {
+    @DeleteMapping(path = "/delete", produces = Const.responseFormat)
+    public Response delete(@RequestParam Integer id) {
         if (id == null) return new Response(Const.statusCodeFailParamNull, "id");
         if (id <= 0) return new Response(Const.statusCodeFailParamInvalid, "id");
 

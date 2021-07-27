@@ -4,7 +4,6 @@ import com.api.soccerTournament.model.Person;
 import com.api.soccerTournament.model.response.Const;
 import com.api.soccerTournament.model.response.Response;
 import com.api.soccerTournament.service.CoachService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 public class CoachController implements IController {
     private final CoachService coachService;
 
-    @Autowired
     public CoachController(CoachService coachService) {
         this.coachService = coachService;
     }
@@ -24,9 +22,9 @@ public class CoachController implements IController {
         return response;
     }
 
-    @PostMapping(path = "/getById", produces = Const.responseFormat)
+    @GetMapping(path = "/getById", produces = Const.responseFormat)
     @Override
-    public Response<Person> readById(@RequestBody Integer id) {
+    public Response<Person> readById(@RequestParam Integer id) {
         Response response = coachService.readById(id);
         return response;
     }
@@ -41,8 +39,8 @@ public class CoachController implements IController {
         return response;
     }
 
-    @PostMapping(path = "/delete", produces = Const.responseFormat)
-    public Response delete(@RequestBody Integer id) {
+    @DeleteMapping(path = "/delete", produces = Const.responseFormat)
+    public Response delete(@RequestParam Integer id) {
         if (id == null) return new Response(Const.statusCodeFailParamNull, "id");
         if (id <= 0) return new Response(Const.statusCodeFailParamInvalid, "id");
 

@@ -2,9 +2,9 @@ package com.api.soccerTournament.controller;
 
 import com.api.soccerTournament.model.Entity;
 import com.api.soccerTournament.model.response.Response;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public interface IController {
     Response<? extends Entity> readAll();
 
