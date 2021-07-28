@@ -13,6 +13,7 @@ import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -37,6 +38,15 @@ class DbApi {
     private static HikariDataSource dataSource = null;
     private static Lock lock = new ReentrantLock();
 
+    @Override
+    public void finalize() {
+        if ((dataSource != null) && (!dataSource.isClosed())) {
+            Utility.printStr("close data source...");
+            dataSource.close();
+        }
+    }
+
+
     private void initialize() {
         HikariConfig config = new HikariConfig();
         StringBuilder urlBuilder = new StringBuilder();
@@ -57,11 +67,11 @@ class DbApi {
     Connection getConnection() throws SQLException {
         lock.lock();
         if (dataSource == null) {
-            Utility.printStr("initialize...");
+            //Utility.printStr("initialize...");
             initialize();
         }
         if (dataSource.isClosed()) {
-            Utility.printStr("isClosed: initialize...");
+            //Utility.printStr("isClosed: initialize...");
             initialize();
         }
         lock.unlock();
@@ -122,6 +132,28 @@ class DbApi {
         }
     }
 
+    private HashMap<String, Field> getResultColumnFieldMap(Class cls, ResultSetMetaData resultSetMetaData)
+            throws SQLException {
+        HashMap<String, Field> clsPropertyNameFieldMap = new HashMap<>();
+        Field field;
+        String colName;
+        for (int i = 0; i < cls.getFields().length; i++) {
+            field = cls.getFields()[i];
+            clsPropertyNameFieldMap.put(field.getName(), field);
+        }
+
+        HashMap<String, Field> resultColFieldMap = new HashMap<>();
+        for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
+            colName = resultSetMetaData.getColumnLabel(i);
+            if (!clsPropertyNameFieldMap.containsKey(colName)) {
+                continue;
+            }
+            resultColFieldMap.put(colName, clsPropertyNameFieldMap.get(colName));
+        }
+
+        return resultColFieldMap;
+    }
+
     Response read(Connection connection, String sql, ArrayList<Object> parameters, Class<? extends Entity> cls) {
         ArrayList<Entity> entities = new ArrayList<>();
 
@@ -136,24 +168,17 @@ class DbApi {
 
             ResultSet rs = prepareStatement.executeQuery();
             ResultSetMetaData resultSetMetaData = prepareStatement.getMetaData();
+            HashMap<String, Field> resultColFieldMap = getResultColumnFieldMap(cls, resultSetMetaData);
 
             String colName;
             Object propertyVal;
             Byte propertyValByte;
-            HashMap<String, Field> colFieldMap = new HashMap<>();
             Field field;
-            for (int i = 0; i < cls.getFields().length; i++) {
-                field = cls.getFields()[i];
-                colFieldMap.put(field.getName(), field);
-            }
             while (rs.next()) {
                 Entity entity = cls.getDeclaredConstructor().newInstance();
-                for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
-                    colName = resultSetMetaData.getColumnLabel(i);
-                    if (!colFieldMap.containsKey(colName)) {
-                        continue;
-                    }
-                    field = colFieldMap.get(colName);
+                for (Map.Entry<String, Field> entry : resultColFieldMap.entrySet()) {
+                    colName = entry.getKey();
+                    field = entry.getValue();
 
                     propertyVal = rs.getObject(colName);
                     if (field.getType().equals(Byte.class)) {
@@ -219,11 +244,13 @@ class DbApi {
 
         StringBuilder paramBuilder = new StringBuilder();
         paramBuilder.append("(");
+        String colName;
         for (int i = 0; i < colNames.size(); i++) {
-            if ((colNames.get(i).equalsIgnoreCase("id")) && (entity.id == null)) {
+            colName = colNames.get(i);
+            if ((colName.equalsIgnoreCase("id")) && (entity.id == null)) {
                 continue;
             }
-            sqlStrBuilder.append(colNames.get(i)).append(",");
+            sqlStrBuilder.append(colName).append(",");
             paramBuilder.append("?,");
         }
         sqlStrBuilder.deleteCharAt(sqlStrBuilder.length() - 1).append(")").append("values");
@@ -234,11 +261,13 @@ class DbApi {
         PreparedStatement prepareStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         Field field;
         int paramCnt = 0;
+
         for (int i = 0; i < colNames.size(); i++) {
-            if ((colNames.get(i).equalsIgnoreCase("id")) && (entity.id == null)) {
+            colName = colNames.get(i);
+            if ((colName.equalsIgnoreCase("id")) && (entity.id == null)) {
                 continue;
             }
-            field = cls.getField(colNames.get(i));
+            field = cls.getField(colName);
             Object value = field.get(entity);
             prepareStatement.setObject(++paramCnt, value);
         }
