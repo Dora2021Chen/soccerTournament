@@ -16,13 +16,13 @@ public interface Const {
 
     HashMap<Integer, String> statusMap = new HashMap<Integer, String>() {{
         put(statusCodeSucceed, "succeed");
-        put(statusCodeFail, "fail");
+        put(statusCodeFail, "internal error");
         put(statusCodeFailParamNull, "parameter is null");
         put(statusCodeFailParamInvalid, "parameter is invalid");
         put(statusCodeFailParamEmpty, "parameter is empty");
         put(statusCodeFailTeamNameExists, "team name exists");
         put(statusCodeFailPersonIdDocNumberExists, "idDocNumber exists");
-        put(statusCodeFailGameExists, "team exists");
+        put(statusCodeFailGameExists, "game exists");
         put(statusCodeFailTeamNotExists, "team not exists");
         put(statusCodeFailGameNotExists, "game not exists");
     }};

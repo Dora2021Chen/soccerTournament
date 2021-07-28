@@ -73,7 +73,7 @@ class DbApi {
     Response readByColumn(String colName, String tableName, Class<? extends Entity> cls, Object colValue) {
         StringBuilder filterStrBuilder = new StringBuilder();
         filterStrBuilder.append(colName).append("=?");
-        ArrayList<Object> parameters = new ArrayList<>() {{
+        ArrayList<Object> parameters = new ArrayList<Object>() {{
             add(colValue);
         }};
         Response response = readByFilters(tableName, cls, filterStrBuilder.toString(), parameters);
@@ -272,7 +272,7 @@ class DbApi {
     Response delete(Connection connection, Integer id, String tableName) {
         StringBuilder sqlStrBuilder = new StringBuilder();
         sqlStrBuilder.append("delete from ").append(tableName).append(" where id=?");
-        ArrayList<Object> parameters = new ArrayList<>() {{
+        ArrayList<Object> parameters = new ArrayList<Object>() {{
             add(id);
         }};
 

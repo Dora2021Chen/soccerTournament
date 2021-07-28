@@ -51,7 +51,7 @@ public class GameRepository extends BaseRepository implements IBaseRepository {
 
     public Response read(Byte roundNo, Integer team1, Integer team2) {
         String filters = "roundNo=? and team1=? and team2=?";
-        ArrayList<Object> parameters = new ArrayList<>() {{
+        ArrayList<Object> parameters = new ArrayList<Object>() {{
             add(roundNo);
             add(Math.min(team1, team2));
             add(Math.max(team1, team2));
@@ -78,7 +78,7 @@ public class GameRepository extends BaseRepository implements IBaseRepository {
             return new Response(Const.statusCodeFailParamInvalid, "winner");
         }
 
-        ArrayList<Object> parameters = new ArrayList<>() {{
+        ArrayList<Object> parameters = new ArrayList<Object>() {{
             add(winner);
             add(id);
         }};

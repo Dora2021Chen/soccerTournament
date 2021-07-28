@@ -58,7 +58,7 @@ create table person (
 
 create table game (
     id           int     auto_increment,
-	roundNo      int     not null,   #--round number of the tournament
+	roundNo      tinyint not null,   #--round number of the tournament
 	team1        int     not null,
 	team2        int     not null,
 	winner       int,
