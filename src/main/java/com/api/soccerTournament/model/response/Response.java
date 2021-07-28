@@ -10,7 +10,7 @@ public class Response<T extends Entity> {
     public ArrayList<T> entities;
 
     public Response() {
-        this.statusCode = Const.statusCodeSucceed;
+        this.statusCode = Const.STATUS_CODE_SUCCEED;
         this.statusMsg = Const.statusMap.get(this.statusCode);
         this.entities = new ArrayList<>();
     }

@@ -13,12 +13,12 @@ public class PlayerRepository extends PersonRepository implements IBaseRepositor
 
     @Override
     public Response readAll() {
-        Response<Person> response = readByRole(Const.rolePlayer);
+        Response<Person> response = readByRole(Const.ROLE_PLAYER);
         return response;
     }
 
     public Response write(Person person) {
-        Response response = write(person, Const.rolePlayer);
+        Response response = write(person, Const.ROLE_PLAYER);
         return response;
     }
 }

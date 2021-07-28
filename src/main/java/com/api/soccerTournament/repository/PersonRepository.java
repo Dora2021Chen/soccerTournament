@@ -40,28 +40,28 @@ class PersonRepository extends ParticipantRepository {
     protected Response write(Person person, Byte role) {
         PersonInternal personInternal = new PersonInternal(person, role);
         Response response = readByIdDocNumber(person.idDocNumber);
-        if (response.statusCode != Const.statusCodeSucceed) {
+        if (response.statusCode != Const.STATUS_CODE_SUCCEED) {
             return response;
         }
 
         if (response.entities.size() > 0) {
             if (person.id == null) {
-                return new Response(Const.statusCodeFailTeamNameExists);
+                return new Response(Const.STATUS_CODE_FAIL_TEAM_NAME_EXISTS);
             }
 
             Person personOld = (Person) response.getEntity();
             if (personOld.id != person.id) {
-                return new Response(Const.statusCodeFailTeamNameExists);
+                return new Response(Const.STATUS_CODE_FAIL_TEAM_NAME_EXISTS);
             }
         }
 
         response = teamRepository.readById(person.teamId);
-        if (response.statusCode != Const.statusCodeSucceed) {
+        if (response.statusCode != Const.STATUS_CODE_SUCCEED) {
             return response;
         }
 
         if (response.entities.size() == 0) {
-            return new Response(Const.statusCodeFailTeamNotExists);
+            return new Response(Const.STATUS_CODE_FAIL_TEAM_NOT_EXISTS);
         }
 
         response = dbApi.write(Optional.of(personInternal), tableName);

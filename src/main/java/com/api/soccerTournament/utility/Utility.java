@@ -7,6 +7,9 @@ import java.util.Date;
 
 public class Utility {
     public static String getGsonStr(Object object) {
+        if (object == null) {
+            return "";
+        }
         Gson gson = new Gson();
         return gson.toJson(object);
     }

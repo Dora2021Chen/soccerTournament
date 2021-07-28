@@ -70,12 +70,12 @@ public class GameRepository extends BaseRepository implements IBaseRepository {
         }
 
         if (response.entities.size() == 0) {
-            return new Response(Const.statusCodeFailGameNotExists);
+            return new Response(Const.STATUS_CODE_FAIL_GAME_NOT_EXISTS);
         }
 
         Game game = (Game) response.getEntity();
         if ((winner != game.team1) || (winner != game.team2)) {
-            return new Response(Const.statusCodeFailParamInvalid, "winner");
+            return new Response(Const.STATUS_CODE_FAIL_PARAM_INVALID, "winner");
         }
 
         ArrayList<Object> parameters = new ArrayList<Object>() {{
@@ -89,21 +89,21 @@ public class GameRepository extends BaseRepository implements IBaseRepository {
 
     public Response write(Game game) {
         Response response = teamRepository.readById(game.team1);
-        if (response.statusCode != Const.statusCodeSucceed) {
+        if (response.statusCode != Const.STATUS_CODE_SUCCEED) {
             return response;
         }
 
         if (response.entities.size() == 0) {
-            return new Response(Const.statusCodeFailTeamNotExists, game.team1.toString());
+            return new Response(Const.STATUS_CODE_FAIL_TEAM_NOT_EXISTS, game.team1.toString());
         }
 
         response = teamRepository.readById(game.team2);
-        if (response.statusCode != Const.statusCodeSucceed) {
+        if (response.statusCode != Const.STATUS_CODE_SUCCEED) {
             return response;
         }
 
         if (response.entities.size() == 0) {
-            return new Response(Const.statusCodeFailTeamNotExists, game.team2.toString());
+            return new Response(Const.STATUS_CODE_FAIL_TEAM_NOT_EXISTS, game.team2.toString());
         }
 
         Integer team1 = Math.min(game.team1, game.team2);
@@ -112,13 +112,13 @@ public class GameRepository extends BaseRepository implements IBaseRepository {
         game.team2 = team2;
 
         response = read(game.roundNo, game.team1, game.team2);
-        if (response.statusCode != Const.statusCodeSucceed) {
+        if (response.statusCode != Const.STATUS_CODE_SUCCEED) {
             return response;
         }
         if (response.entities.size() > 0) {
             Entity entity = response.getEntity();
             if ((game.id == null) || (entity.id != game.id)) {
-                return new Response(Const.statusCodeFailGameExists);
+                return new Response(Const.STATUS_CODE_FAIL_GAME_EXISTS);
             }
         }
         response = dbApi.write(Optional.of(game), tableName);

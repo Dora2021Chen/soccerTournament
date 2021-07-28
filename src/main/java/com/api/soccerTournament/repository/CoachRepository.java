@@ -13,12 +13,12 @@ public class CoachRepository extends PersonRepository implements IBaseRepository
 
     @Override
     public Response readAll() {
-        Response response = readByRole(Const.roleCoach);
+        Response response = readByRole(Const.ROLE_COACH);
         return response;
     }
 
     public Response write(Person person) {
-        Response response = write(person, Const.roleCoach);
+        Response response = write(person, Const.ROLE_COACH);
         return response;
     }
 }

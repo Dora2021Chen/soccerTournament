@@ -36,13 +36,13 @@ public class TeamRepository extends ParticipantRepository implements IBaseReposi
 
     public Response write(Team team) {
         Response response = readByName(team.name);
-        if (response.statusCode != Const.statusCodeSucceed) {
+        if (response.statusCode != Const.STATUS_CODE_SUCCEED) {
             Utility.printGsonStr(response);
             return response;
         }
 
         if (response.entities.size() > 0) {
-            return new Response(Const.statusCodeFailTeamNameExists);
+            return new Response(Const.STATUS_CODE_FAIL_TEAM_NAME_EXISTS);
         }
 
         response = dbApi.write(Optional.of(team), tableName);

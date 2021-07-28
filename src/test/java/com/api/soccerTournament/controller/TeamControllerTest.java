@@ -1,50 +1,55 @@
 package com.api.soccerTournament.controller;
 
+import com.api.soccerTournament.model.Team;
 import com.api.soccerTournament.model.response.Const;
-import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import com.api.soccerTournament.model.response.Response;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-class TeamControllerTest {
-    @Autowired
-    MockMvc mockMvc;
-
+class TeamControllerTest extends TestBase {
     private String baseUrl = "/api/soccerTournament/team";
-
-    Gson gson = new Gson();
 
     @Test
     void readAll() throws Exception {
         String url = baseUrl + "/getAll";
-
-        ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.get(url));
-        actions.andExpect(MockMvcResultMatchers.status().isOk());
-
-        String responseStr = actions.andReturn().getResponse().getContentAsString();
-        assertNotNull(responseStr);
-        System.out.println(responseStr);
-        Response response = gson.fromJson(responseStr, Response.class);
-        System.out.println(response.statusCode);
-        assertNotNull(response);
-        assertEquals(response.statusCode, Const.statusCodeSucceed);
+        readAll(url);
     }
 
     @Test
-    void write() {
+    void readById() throws Exception {
+        String url = baseUrl + "/getById";
+        readById(url);
+    }
+
+    void writeOnce(Team team, int expectedResultCode) throws Exception {
+        String url = baseUrl + "/write";
+        writeOnce(url, Optional.of(team), expectedResultCode);
+    }
+
+    @Test
+    void write() throws Exception {
+        Team team = new Team();
+        writeOnce(team, Const.STATUS_CODE_FAIL_PARAM_NULL);
+        team.name = "  ";
+        writeOnce(team, Const.STATUS_CODE_FAIL_PARAM_EMPTY);
+
+        String teamName = "test_" + System.currentTimeMillis();
+        team.name = teamName;
+        writeOnce(team, Const.STATUS_CODE_SUCCEED);
+        writeOnce(team, Const.STATUS_CODE_FAIL_TEAM_NAME_EXISTS);
+
+        team.name = TestBase.getStr(51);
+        writeOnce(team, Const.STATUS_CODE_FAIL_PARAM_TOO_LONG);
+
+        team.name = TestBase.getStr(50);
+        writeOnce(team, Const.STATUS_CODE_SUCCEED);
     }
 
     @Test

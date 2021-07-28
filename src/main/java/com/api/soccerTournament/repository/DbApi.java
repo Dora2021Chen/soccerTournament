@@ -112,7 +112,7 @@ class DbApi {
 
             response = read(sqlStrBuilder.toString(), parameters, cls);
         } catch (Exception ex) {
-            response = new Response(Const.statusCodeFail, ex.getMessage());
+            response = new Response(Const.STATUS_CODE_FAIL, ex.getMessage());
         }
 
         return response;
@@ -128,7 +128,7 @@ class DbApi {
             Response response = read(connection, sql, parameters, cls);
             return response;
         } catch (Exception ex) {
-            return new Response(Const.statusCodeFail, ex.getMessage());
+            return new Response(Const.STATUS_CODE_FAIL, ex.getMessage());
         }
     }
 
@@ -192,9 +192,9 @@ class DbApi {
             }
 
             prepareStatement.close();
-            response = new Response(Const.statusCodeSucceed, entities);
+            response = new Response(Const.STATUS_CODE_SUCCEED, entities);
         } catch (Exception ex) {
-            response = new Response(Const.statusCodeFail, ex.getMessage());
+            response = new Response(Const.STATUS_CODE_FAIL, ex.getMessage());
         }
 
         return response;
@@ -226,7 +226,7 @@ class DbApi {
             response = write(connection, optionalEntity, tableName);
             connection.commit();
         } catch (Exception ex) {
-            response = new Response(Const.statusCodeFail, ex.getMessage());
+            response = new Response(Const.STATUS_CODE_FAIL, ex.getMessage());
         }
 
         return response;
@@ -274,7 +274,7 @@ class DbApi {
 
         prepareStatement.execute();
 
-        response = new Response(Const.statusCodeSucceed);
+        response = new Response(Const.STATUS_CODE_SUCCEED);
         ResultSet res = prepareStatement.getGeneratedKeys();
         while (res.next()) {
             Integer id = res.getInt(1);
@@ -292,7 +292,7 @@ class DbApi {
             response = delete(connection, id, tableName);
             connection.commit();
         } catch (Exception ex) {
-            response = new Response(Const.statusCodeFail, ex.getMessage());
+            response = new Response(Const.STATUS_CODE_FAIL, ex.getMessage());
         }
 
         return response;
@@ -317,7 +317,7 @@ class DbApi {
             response = executeNonQuery(connection, sql, parameters);
             connection.commit();
         } catch (Exception ex) {
-            response = new Response(Const.statusCodeFail, ex.getMessage());
+            response = new Response(Const.STATUS_CODE_FAIL, ex.getMessage());
         }
 
         return response;
@@ -336,9 +336,9 @@ class DbApi {
             }
 
             prepareStatement.execute();
-            response = new Response(Const.statusCodeSucceed);
+            response = new Response(Const.STATUS_CODE_SUCCEED);
         } catch (Exception ex) {
-            response = new Response(Const.statusCodeFail, ex.getMessage());
+            response = new Response(Const.STATUS_CODE_FAIL, ex.getMessage());
         }
 
         return response;
