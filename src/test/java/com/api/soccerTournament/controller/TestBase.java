@@ -135,4 +135,28 @@ public class TestBase {
         int teamId = writeOnce(url, Optional.of(team), Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
         return teamId;
     }
+
+    void delete(String url, Integer id, int expectedResultCode, int unUxpectedResultCode) throws Exception {
+        LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
+        requestParams.add("id", id.toString());
+        ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.delete(url).params(requestParams));
+        actions.andExpect(MockMvcResultMatchers.status().isOk());
+
+        String responseStr = actions.andReturn().getResponse().getContentAsString();
+        assertNotNull(responseStr);
+        Utility.printStr(responseStr);
+        Response response = gson.fromJson(responseStr, new TypeToken<Response<Entity>>() {
+        }.getType());
+        assertNotNull(response);
+        if (isStatusCodeValid(expectedResultCode)) {
+            assertEquals(response.statusCode, expectedResultCode);
+        }
+
+        if (isStatusCodeValid(unUxpectedResultCode)) {
+            assertNotEquals(response.statusCode, unUxpectedResultCode);
+        }
+
+        assertNotNull(response.entities);
+        assert (response.entities.size() <= 1);
+    }
 }

@@ -51,7 +51,16 @@ public class TeamRepository extends ParticipantRepository implements IBaseReposi
 
     @Override
     public Response delete(Integer id) {
-        Response response = dbApi.delete(id, tableName);
+        Response response = readById(id);
+        if (response.statusCode != 0) {
+            return response;
+        }
+
+        if (response.entities.size() == 0) {
+            return new Response(Const.STATUS_CODE_FAIL_TEAM_NOT_EXISTS);
+        }
+
+        response = dbApi.delete(id, tableName);
         return response;
     }
 }

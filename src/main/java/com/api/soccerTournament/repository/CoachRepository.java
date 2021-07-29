@@ -27,4 +27,18 @@ public class CoachRepository extends PersonRepository implements IBaseRepository
         Response response = write(person, Const.ROLE_COACH);
         return response;
     }
+
+    public Response delete(Integer id) {
+        Response response = readById(id);
+        if (response.statusCode != 0) {
+            return response;
+        }
+
+        if (response.entities.size() == 0) {
+            return new Response(Const.STATUS_CODE_FAIL_COACH_NOT_EXISTS);
+        }
+
+        response = delete(id, Const.ROLE_COACH);
+        return response;
+    }
 }

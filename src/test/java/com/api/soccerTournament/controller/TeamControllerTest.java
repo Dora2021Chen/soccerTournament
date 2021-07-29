@@ -54,7 +54,17 @@ class TeamControllerTest extends TestBase {
         writeOnce(team, Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
     }
 
+    void delete(int id, int expectedResultCode, int unUxpectedResultCode) throws Exception {
+        String url = baseUrlTeam + "/delete";
+        delete(url, id, expectedResultCode, unUxpectedResultCode);
+    }
+
     @Test
-    void delete() {
+    void delete() throws Exception {
+        delete(-1, Const.STATUS_CODE_FAIL_PARAM_INVALID, INVALID_STATUS);
+        delete(0, Const.STATUS_CODE_FAIL_PARAM_INVALID, INVALID_STATUS);
+        int teamId = writeATeam();
+        delete(teamId, Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
+        delete(teamId, Const.STATUS_CODE_FAIL_TEAM_NOT_EXISTS, INVALID_STATUS);
     }
 }

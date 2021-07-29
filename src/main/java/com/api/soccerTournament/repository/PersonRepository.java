@@ -6,6 +6,7 @@ import com.api.soccerTournament.model.response.Const;
 import com.api.soccerTournament.model.response.Response;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Repository
@@ -85,8 +86,14 @@ class PersonRepository extends ParticipantRepository {
         return response;
     }
 
-    public Response delete(Integer id) {
-        Response response = dbApi.delete(id, tableName);
+    public Response delete(Integer id, Byte role) {
+        String sql = "delete from person where id=? and role=?";
+        ArrayList<Object> parameters = new ArrayList<Object>() {{
+            add(id);
+            add(role);
+        }};
+
+        Response response = dbApi.executeNonQuery(sql, parameters);
         return response;
     }
 }

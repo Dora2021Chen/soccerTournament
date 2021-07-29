@@ -2,6 +2,7 @@ package com.api.soccerTournament.controller;
 
 import com.api.soccerTournament.model.Game;
 import com.api.soccerTournament.model.response.Const;
+import com.api.soccerTournament.utility.Utility;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -37,7 +38,15 @@ class GameControllerTest extends TestBase {
         game.team2 = writeATeam();
         game.winner = game.team2;
 
+        Utility.printGsonStr(game);
+
         return writeOnce(game, Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
+    }
+
+    @Test
+    void writeOnce() throws Exception {
+        int gameId = writeAGame();
+        System.out.println("gameId:" + gameId);
     }
 
     int writeOnce(Game game, int expectedResultCode, int unUxpectedResultCode) throws Exception {
@@ -102,7 +111,17 @@ class GameControllerTest extends TestBase {
         assertEquals(gameId, gameIdNew);
     }
 
+    void delete(int id, int expectedResultCode, int unUxpectedResultCode) throws Exception {
+        String url = baseUrlGame + "/delete";
+        delete(url, id, expectedResultCode, unUxpectedResultCode);
+    }
+
     @Test
-    void delete() {
+    void delete() throws Exception {
+        delete(-1, Const.STATUS_CODE_FAIL_PARAM_INVALID, INVALID_STATUS);
+        delete(0, Const.STATUS_CODE_FAIL_PARAM_INVALID, INVALID_STATUS);
+        int gameId = writeAGame();
+        delete(gameId, Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
+        delete(gameId, Const.STATUS_CODE_FAIL_GAME_NOT_EXISTS, INVALID_STATUS);
     }
 }

@@ -25,6 +25,9 @@ public class PlayerController implements IController {
     @GetMapping(path = "/getById", produces = Const.RESPONSE_FORMAT)
     @Override
     public Response<Person> readById(@RequestParam Integer id) {
+        if (id == null) return new Response(Const.STATUS_CODE_FAIL_PARAM_NULL, "id");
+        if (id <= 0) return new Response(Const.STATUS_CODE_FAIL_PARAM_INVALID, "id");
+
         Response response = playerService.readById(id);
         return response;
     }

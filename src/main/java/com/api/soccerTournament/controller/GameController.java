@@ -25,6 +25,9 @@ public class GameController implements IController {
     @GetMapping(path = "/getById", produces = Const.RESPONSE_FORMAT)
     @Override
     public Response<Game> readById(@RequestParam Integer id) {
+        if (id == null) return new Response(Const.STATUS_CODE_FAIL_PARAM_NULL, "id");
+        if (id <= 0) return new Response(Const.STATUS_CODE_FAIL_PARAM_INVALID, "id");
+
         Response response = gameService.readById(id);
         return response;
     }
@@ -51,10 +54,13 @@ public class GameController implements IController {
             return new Response(Const.STATUS_CODE_FAIL_PARAM_INVALID, "game.roundNo");
         if (game.team1 <= 0) return new Response(Const.STATUS_CODE_FAIL_PARAM_INVALID, "game.team1");
         if (game.team2 <= 0) return new Response(Const.STATUS_CODE_FAIL_PARAM_INVALID, "game.team2");
-        if (game.team1 == game.team2)
+        if (game.team1.equals(game.team2))
             return new Response(Const.STATUS_CODE_FAIL_PARAM_INVALID, "game.team1==game.team2");
-        if ((game.winner != null) && ((game.winner != game.team1) & (game.winner != game.team2)))
-            return new Response(Const.STATUS_CODE_FAIL_PARAM_INVALID, "game.winner");
+        if (game.winner != null) {
+            if (!game.winner.equals(game.team1) && !game.winner.equals(game.team2)) {
+                return new Response(Const.STATUS_CODE_FAIL_PARAM_INVALID, "game.winner");
+            }
+        }
 
         Response response = gameService.write(game);
         return response;
