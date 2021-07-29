@@ -47,6 +47,8 @@ public class GameController implements IController {
         if (game.team1 == null) return new Response(Const.STATUS_CODE_FAIL_PARAM_NULL, "game.team1");
         if (game.team2 == null) return new Response(Const.STATUS_CODE_FAIL_PARAM_NULL, "game.team2");
         if (game.roundNo <= 0) return new Response(Const.STATUS_CODE_FAIL_PARAM_INVALID, "game.roundNo");
+        if (game.roundNo >= Const.MAX_ROUND_NO)
+            return new Response(Const.STATUS_CODE_FAIL_PARAM_INVALID, "game.roundNo");
         if (game.team1 <= 0) return new Response(Const.STATUS_CODE_FAIL_PARAM_INVALID, "game.team1");
         if (game.team2 <= 0) return new Response(Const.STATUS_CODE_FAIL_PARAM_INVALID, "game.team2");
         if (game.team1 == game.team2)

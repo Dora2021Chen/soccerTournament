@@ -66,7 +66,7 @@ create table game (
 	constraint fk_game_team1 foreign key (team1) references team(id),
 	constraint fk_game_team2 foreign key (team2) references team(id),
 	constraint uq_game unique (roundNo,team1,team2),
-	constraint ck_game_roundNo check (roundNo>=1),
+	constraint ck_game_roundNo check (roundNo>=1 and roundNo<=100),
 	constraint ck_game_team check (team1<team2),
 	constraint ck_game_winner check (winner is null or winner in (team1,team2))
 );

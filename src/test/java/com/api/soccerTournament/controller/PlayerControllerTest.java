@@ -13,23 +13,21 @@ import java.util.Optional;
 @SpringBootTest
 @AutoConfigureMockMvc
 class PlayerControllerTest extends TestBase {
-    private String baseUrl = "/api/soccerTournament/player";
-
     @Test
     void readAll() throws Exception {
-        String url = baseUrl + "/getAll";
+        String url = baseUrlPlayer + "/getAll";
         readAll(url);
     }
 
     @Test
     void readById() throws Exception {
-        String url = baseUrl + "/getById";
+        String url = baseUrlPlayer + "/getById";
         readById(url);
     }
 
-    void writeOnce(Person person, int expectedResultCode) throws Exception {
-        String url = baseUrl + "/write";
-        writeOnce(url, Optional.of(person), expectedResultCode);
+    void writeOnce(Person person, int expectedResultCode, int unUxpectedResultCode) throws Exception {
+        String url = baseUrlPlayer + "/write";
+        writeOnce(url, Optional.of(person), expectedResultCode, unUxpectedResultCode);
     }
 
     @Test

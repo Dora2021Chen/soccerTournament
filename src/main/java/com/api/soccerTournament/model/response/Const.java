@@ -15,7 +15,7 @@ public interface Const {
     int STATUS_CODE_FAIL_TEAM_NOT_EXISTS = 1200;
     int STATUS_CODE_FAIL_GAME_NOT_EXISTS = 1201;
 
-    HashMap<Integer, String> statusMap = new HashMap<Integer, String>() {{
+    HashMap<Integer, String> STATUS_MAP = new HashMap<Integer, String>() {{
         put(STATUS_CODE_SUCCEED, "succeed");
         put(STATUS_CODE_FAIL, "internal error");
         put(STATUS_CODE_FAIL_PARAM_NULL, "parameter is null");
@@ -35,6 +35,8 @@ public interface Const {
 
     int MAX_NAME_LEN = 50;
     int MAX_ID_DOC_NUMBER_LEN = 50;
+
+    int MAX_ROUND_NO = 100;
 
     String RESPONSE_FORMAT = "application/json";
 }

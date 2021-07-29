@@ -14,42 +14,40 @@ import java.util.Optional;
 @SpringBootTest
 @AutoConfigureMockMvc
 class TeamControllerTest extends TestBase {
-    private String baseUrl = "/api/soccerTournament/team";
-
     @Test
     void readAll() throws Exception {
-        String url = baseUrl + "/getAll";
+        String url = baseUrlTeam + "/getAll";
         readAll(url);
     }
 
     @Test
     void readById() throws Exception {
-        String url = baseUrl + "/getById";
+        String url = baseUrlTeam + "/getById";
         readById(url);
     }
 
-    void writeOnce(Team team, int expectedResultCode) throws Exception {
-        String url = baseUrl + "/write";
-        writeOnce(url, Optional.of(team), expectedResultCode);
+    int writeOnce(Team team, int expectedResultCode, int unUxpectedResultCode) throws Exception {
+        String url = baseUrlTeam + "/write";
+        return writeOnce(url, Optional.of(team), expectedResultCode, unUxpectedResultCode);
     }
 
     @Test
     void write() throws Exception {
         Team team = new Team();
-        writeOnce(team, Const.STATUS_CODE_FAIL_PARAM_NULL);
+        writeOnce(team, Const.STATUS_CODE_FAIL_PARAM_NULL, Const.STATUS_CODE_SUCCEED);
         team.name = "  ";
-        writeOnce(team, Const.STATUS_CODE_FAIL_PARAM_EMPTY);
+        writeOnce(team, Const.STATUS_CODE_FAIL_PARAM_EMPTY, Const.STATUS_CODE_SUCCEED);
 
         String teamName = "test_" + System.currentTimeMillis();
         team.name = teamName;
-        writeOnce(team, Const.STATUS_CODE_SUCCEED);
-        writeOnce(team, Const.STATUS_CODE_FAIL_TEAM_NAME_EXISTS);
+        writeOnce(team, Const.STATUS_CODE_SUCCEED, STATUS_INVALID);
+        writeOnce(team, Const.STATUS_CODE_FAIL_TEAM_NAME_EXISTS, Const.STATUS_CODE_SUCCEED);
 
         team.name = TestBase.getStr(51);
-        writeOnce(team, Const.STATUS_CODE_FAIL_PARAM_TOO_LONG);
+        writeOnce(team, Const.STATUS_CODE_FAIL_PARAM_TOO_LONG, Const.STATUS_CODE_SUCCEED);
 
         team.name = TestBase.getStr(50);
-        writeOnce(team, Const.STATUS_CODE_SUCCEED);
+        writeOnce(team, Const.STATUS_CODE_SUCCEED, STATUS_INVALID);
     }
 
     @Test

@@ -11,19 +11,19 @@ public class Response<T extends Entity> {
 
     public Response() {
         this.statusCode = Const.STATUS_CODE_SUCCEED;
-        this.statusMsg = Const.statusMap.get(this.statusCode);
+        this.statusMsg = Const.STATUS_MAP.get(this.statusCode);
         this.entities = new ArrayList<>();
     }
 
     public Response(int statusCode) {
         this.statusCode = statusCode;
-        this.statusMsg = Const.statusMap.get(this.statusCode);
+        this.statusMsg = Const.STATUS_MAP.get(this.statusCode);
         this.entities = new ArrayList<>();
     }
 
     public Response(int statusCode, ArrayList<T> entities) {
         this.statusCode = statusCode;
-        this.statusMsg = Const.statusMap.get(this.statusCode);
+        this.statusMsg = Const.STATUS_MAP.get(this.statusCode);
         this.entities = entities;
     }
 
@@ -33,7 +33,7 @@ public class Response<T extends Entity> {
             this.statusMsg = statusMsg;
         } else {
             StringBuilder statusMsgBuilder = new StringBuilder();
-            statusMsgBuilder.append(Const.statusMap.get(this.statusCode));
+            statusMsgBuilder.append(Const.STATUS_MAP.get(this.statusCode));
             statusMsgBuilder.append(": ").append(statusMsg);
             this.statusMsg = statusMsgBuilder.toString();
         }
@@ -47,7 +47,7 @@ public class Response<T extends Entity> {
             this.statusMsg = statusMsg;
         } else {
             StringBuilder statusMsgBuilder = new StringBuilder();
-            statusMsgBuilder.append(Const.statusMap.get(this.statusCode));
+            statusMsgBuilder.append(Const.STATUS_MAP.get(this.statusCode));
             statusMsgBuilder.append(":").append(statusMsg);
             this.statusMsg = statusMsgBuilder.toString();
         }
