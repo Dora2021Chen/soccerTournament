@@ -1,18 +1,17 @@
 package com.api.soccerTournament.controller;
 
-import com.api.soccerTournament.model.Person;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-class CoachControllerTest extends TestBase {
+class CoachControllerTest extends PersonTest {
     @Test
     void readAll() throws Exception {
         String url = baseUrlCoach + "/getAll";
@@ -22,16 +21,19 @@ class CoachControllerTest extends TestBase {
     @Test
     void readById() throws Exception {
         String url = baseUrlCoach + "/getById";
-        readById(url);
-    }
+        int personId = writeACoach();
+        int personIdReturnedByRead = readById(url, personId);
+        assertEquals(personId, personIdReturnedByRead);
 
-    void writeOnce(Person person, int expectedResultCode, int unUxpectedResultCode) throws Exception {
-        String url = baseUrlCoach + "/write";
-        writeOnce(url, Optional.of(person), expectedResultCode, unUxpectedResultCode);
+        personId = writeAPlayer();
+        personIdReturnedByRead = readById(url, personId);
+        assertEquals(INVALID_ID, personIdReturnedByRead);
     }
 
     @Test
-    void write() {
+    void write() throws Exception {
+        String url = baseUrlCoach + "/write";
+        write(url);
     }
 
     @Test

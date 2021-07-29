@@ -19,6 +19,7 @@ class PersonRepository extends ParticipantRepository {
 
     private static final String tableName = "person";
     private static final Class clsOutput = Person.class;
+    private static final Class clsOutput1 = PersonInternal.class;
 
     protected Response readByRole(Byte role) {
         String colName = "role";
@@ -26,8 +27,24 @@ class PersonRepository extends ParticipantRepository {
         return response;
     }
 
-    public Response readById(Integer id) {
-        Response response = readById(id, tableName, clsOutput);
+    public Response readById(Integer id, Byte role) {
+        Response response = readById(id, tableName, clsOutput1);
+        if (response.statusCode != Const.STATUS_CODE_SUCCEED) {
+            return response;
+        }
+
+        if (response.entities.size() == 0) {
+            return response;
+        }
+
+        PersonInternal personInternal = (PersonInternal) response.getEntity();
+
+        if (personInternal.role.equals(role)) {
+            return response;
+        }
+
+        response.entities.clear();
+
         return response;
     }
 
@@ -46,12 +63,12 @@ class PersonRepository extends ParticipantRepository {
 
         if (response.entities.size() > 0) {
             if (person.id == null) {
-                return new Response(Const.STATUS_CODE_FAIL_TEAM_NAME_EXISTS);
+                return new Response(Const.STATUS_CODE_FAIL_PERSON_ID_DOC_NUMBER_EXISTS);
             }
 
             Person personOld = (Person) response.getEntity();
             if (personOld.id != person.id) {
-                return new Response(Const.STATUS_CODE_FAIL_TEAM_NAME_EXISTS);
+                return new Response(Const.STATUS_CODE_FAIL_PERSON_ID_DOC_NUMBER_EXISTS);
             }
         }
 

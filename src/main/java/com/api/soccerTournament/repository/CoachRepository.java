@@ -17,6 +17,12 @@ public class CoachRepository extends PersonRepository implements IBaseRepository
         return response;
     }
 
+    @Override
+    public Response readById(Integer id) {
+        Response response = readById(id, Const.ROLE_COACH);
+        return response;
+    }
+
     public Response write(Person person) {
         Response response = write(person, Const.ROLE_COACH);
         return response;

@@ -1,7 +1,6 @@
 package com.api.soccerTournament.controller;
 
 import com.api.soccerTournament.model.Game;
-import com.api.soccerTournament.model.Team;
 import com.api.soccerTournament.model.response.Const;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +25,19 @@ class GameControllerTest extends TestBase {
     @Test
     void readById() throws Exception {
         String url = baseUrlGame + "/getById";
-        readById(url);
+        int gameId = writeAGame();
+        int gameIdReturnedByRead = readById(url, gameId);
+        assertEquals(gameId, gameIdReturnedByRead);
+    }
+
+    int writeAGame() throws Exception {
+        Game game = new Game();
+        game.roundNo = 1;
+        game.team1 = writeATeam();
+        game.team2 = writeATeam();
+        game.winner = game.team2;
+
+        return writeOnce(game, Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
     }
 
     int writeOnce(Game game, int expectedResultCode, int unUxpectedResultCode) throws Exception {
@@ -37,55 +48,58 @@ class GameControllerTest extends TestBase {
     @Test
     void write() throws Exception {
         Game game = new Game();
-        writeOnce(game, STATUS_INVALID, Const.STATUS_CODE_SUCCEED);
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
         game.roundNo = -1;
-        writeOnce(game, STATUS_INVALID, Const.STATUS_CODE_SUCCEED);
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
         game.roundNo = 0;
-        writeOnce(game, STATUS_INVALID, Const.STATUS_CODE_SUCCEED);
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
         game.roundNo = 100;
-        writeOnce(game, STATUS_INVALID, Const.STATUS_CODE_SUCCEED);
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
         game.roundNo = 101;
-        writeOnce(game, STATUS_INVALID, Const.STATUS_CODE_SUCCEED);
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
         game.roundNo = 1;
-        writeOnce(game, STATUS_INVALID, Const.STATUS_CODE_SUCCEED);
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
         game.team1 = -1;
-        writeOnce(game, STATUS_INVALID, Const.STATUS_CODE_SUCCEED);
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
         game.team1 = 0;
-        writeOnce(game, STATUS_INVALID, Const.STATUS_CODE_SUCCEED);
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
         game.team1 = 100000;
-        writeOnce(game, STATUS_INVALID, Const.STATUS_CODE_SUCCEED);
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
         game.team2 = -1;
-        writeOnce(game, STATUS_INVALID, Const.STATUS_CODE_SUCCEED);
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
         game.team2 = 0;
-        writeOnce(game, STATUS_INVALID, Const.STATUS_CODE_SUCCEED);
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
         game.team2 = 100000;
-        writeOnce(game, STATUS_INVALID, Const.STATUS_CODE_SUCCEED);
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
 
         game.team1 = writeATeam();
-        writeOnce(game, STATUS_INVALID, Const.STATUS_CODE_SUCCEED);
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
 
         game.team2 = writeATeam();
-        int gameId = writeOnce(game, Const.STATUS_CODE_SUCCEED, STATUS_INVALID);
+        int gameId = writeOnce(game, Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
 
         game.winner = -1;
-        writeOnce(game, STATUS_INVALID, Const.STATUS_CODE_SUCCEED);
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
 
         game.winner = 0;
-        writeOnce(game, STATUS_INVALID, Const.STATUS_CODE_SUCCEED);
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
 
-        game.winner = 100000;
-        writeOnce(game, STATUS_INVALID, Const.STATUS_CODE_SUCCEED);
+        game.winner = game.team2 + 1;
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
 
-        game.winner =game.team1;
-        writeOnce(game, STATUS_INVALID, Const.STATUS_CODE_SUCCEED);
+        game.winner = game.team1;
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
 
-        game.winner =game.team2;
-        writeOnce(game, STATUS_INVALID, Const.STATUS_CODE_SUCCEED);
+        game.winner = game.team2;
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
 
-        game.id=gameId;
-        int gameIdNew = writeOnce(game, Const.STATUS_CODE_SUCCEED, STATUS_INVALID);
+        game.id = gameId;
+        int gameIdNew = writeOnce(game, Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
 
-        assertEquals(gameId,gameIdNew);
+        game.winner = game.team2 + 1;
+        writeOnce(game, INVALID_STATUS, Const.STATUS_CODE_SUCCEED);
+
+        assertEquals(gameId, gameIdNew);
     }
 
     @Test

@@ -10,6 +10,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -23,7 +25,9 @@ class TeamControllerTest extends TestBase {
     @Test
     void readById() throws Exception {
         String url = baseUrlTeam + "/getById";
-        readById(url);
+        int teamId = writeATeam();
+        int teamIdReturnedByRead = readById(url, teamId);
+        assertEquals(teamId, teamIdReturnedByRead);
     }
 
     int writeOnce(Team team, int expectedResultCode, int unUxpectedResultCode) throws Exception {
@@ -40,14 +44,14 @@ class TeamControllerTest extends TestBase {
 
         String teamName = "test_" + System.currentTimeMillis();
         team.name = teamName;
-        writeOnce(team, Const.STATUS_CODE_SUCCEED, STATUS_INVALID);
+        writeOnce(team, Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
         writeOnce(team, Const.STATUS_CODE_FAIL_TEAM_NAME_EXISTS, Const.STATUS_CODE_SUCCEED);
 
-        team.name = TestBase.getStr(51);
+        team.name = TestBase.getStr(Const.MAX_NAME_LEN + 1);
         writeOnce(team, Const.STATUS_CODE_FAIL_PARAM_TOO_LONG, Const.STATUS_CODE_SUCCEED);
 
-        team.name = TestBase.getStr(50);
-        writeOnce(team, Const.STATUS_CODE_SUCCEED, STATUS_INVALID);
+        team.name = TestBase.getStr(Const.MAX_NAME_LEN);
+        writeOnce(team, Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
     }
 
     @Test

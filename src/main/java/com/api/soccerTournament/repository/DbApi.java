@@ -245,6 +245,8 @@ class DbApi {
         StringBuilder paramBuilder = new StringBuilder();
         paramBuilder.append("(");
         String colName;
+        StringBuilder updateBuilder = new StringBuilder();
+        updateBuilder.append("ON DUPLICATE KEY UPDATE ");
         for (int i = 0; i < colNames.size(); i++) {
             colName = colNames.get(i);
             if ((colName.equalsIgnoreCase("id")) && (entity.id == null)) {
@@ -252,10 +254,13 @@ class DbApi {
             }
             sqlStrBuilder.append(colName).append(",");
             paramBuilder.append("?,");
+            updateBuilder.append(colName).append("=VALUES(").append(colName).append("),");
         }
         sqlStrBuilder.deleteCharAt(sqlStrBuilder.length() - 1).append(")").append("values");
         sqlStrBuilder.append(paramBuilder).deleteCharAt(sqlStrBuilder.length() - 1);
         sqlStrBuilder.append(")");
+        sqlStrBuilder.append(updateBuilder).deleteCharAt(sqlStrBuilder.length() - 1);
+        Utility.printStr(sqlStrBuilder.toString());
         String sql = sqlStrBuilder.toString();
 
         PreparedStatement prepareStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);

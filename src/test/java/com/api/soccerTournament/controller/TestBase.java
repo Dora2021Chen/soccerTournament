@@ -35,7 +35,8 @@ public class TestBase {
 
     Gson gson = new Gson();
 
-    protected static final int STATUS_INVALID = -1;
+    protected static final int INVALID_STATUS = -1;
+    protected static final int INVALID_ID = -1;
 
     private static final MediaType APPLICATION_JSON_UTF8
             = new MediaType(MediaType.APPLICATION_JSON.getType(),
@@ -70,20 +71,26 @@ public class TestBase {
         assertNotNull(response.entities);
     }
 
-    void readById(String url) throws Exception {
+    int readById(String url, Integer id) throws Exception {
         LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
-        requestParams.add("id", "1");
+        requestParams.add("id", id.toString());
         ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.get(url).params(requestParams));
         actions.andExpect(MockMvcResultMatchers.status().isOk());
 
         String responseStr = actions.andReturn().getResponse().getContentAsString();
         assertNotNull(responseStr);
         Utility.printStr(responseStr);
-        Response response = gson.fromJson(responseStr, Response.class);
+        Response response = gson.fromJson(responseStr, new TypeToken<Response<Entity>>() {
+        }.getType());
         assertNotNull(response);
         assertEquals(response.statusCode, Const.STATUS_CODE_SUCCEED);
         assertNotNull(response.entities);
         assert (response.entities.size() <= 1);
+        if (response.entities.size() == 1) {
+            return response.getEntity().id;
+        } else {
+            return INVALID_ID;
+        }
     }
 
     int writeOnce(String url, Optional<? extends Entity> optionalEntity
@@ -117,7 +124,7 @@ public class TestBase {
             return entity.id;
         } else {
             assert (response.entities.size() == 0);
-            return -1;
+            return INVALID_ID;
         }
     }
 
@@ -125,7 +132,7 @@ public class TestBase {
         Team team = new Team();
         team.name = TestBase.getStr(50);
         String url = baseUrlTeam + "/write";
-        int teamId = writeOnce(url, Optional.of(team), Const.STATUS_CODE_SUCCEED, STATUS_INVALID);
+        int teamId = writeOnce(url, Optional.of(team), Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
         return teamId;
     }
 }
