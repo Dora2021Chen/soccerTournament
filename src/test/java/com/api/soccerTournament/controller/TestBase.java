@@ -1,6 +1,8 @@
 package com.api.soccerTournament.controller;
 
 import com.api.soccerTournament.model.Entity;
+import com.api.soccerTournament.model.Game;
+import com.api.soccerTournament.model.Person;
 import com.api.soccerTournament.model.Team;
 import com.api.soccerTournament.model.response.Const;
 import com.api.soccerTournament.model.response.Response;
@@ -134,6 +136,28 @@ public class TestBase {
         String url = baseUrlTeam + "/write";
         int teamId = writeOnce(url, Optional.of(team), Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
         return teamId;
+    }
+
+    int writeAGame() throws Exception {
+        String url = baseUrlGame + "/write";
+        Game game = new Game();
+        game.roundNo = 1;
+        game.team1 = writeATeam();
+        game.team2 = writeATeam();
+        game.winner = game.team2;
+
+        Utility.printGsonStr(game);
+
+        return writeOnce(url, Optional.of(game), Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
+    }
+
+    int writeAPerson(String url) throws Exception {
+        Person person = new Person();
+        person.name = getStr(Const.MAX_NAME_LEN);
+        person.idDocNumber = getStr(Const.MAX_ID_DOC_NUMBER_LEN);
+        person.teamId = writeATeam();
+        int personId = writeOnce(url, Optional.of(person), Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
+        return personId;
     }
 
     void delete(String url, Integer id, int expectedResultCode, int unUxpectedResultCode) throws Exception {

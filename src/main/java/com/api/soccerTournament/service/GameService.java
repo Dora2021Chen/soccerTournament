@@ -1,6 +1,5 @@
 package com.api.soccerTournament.service;
 
-import com.api.soccerTournament.model.Entity;
 import com.api.soccerTournament.model.Game;
 import com.api.soccerTournament.model.response.Response;
 import com.api.soccerTournament.repository.GameRepository;
@@ -8,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GameService implements IService {
-    public final GameRepository gameRepository;
+    private final GameRepository gameRepository;
 
     public GameService(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
@@ -21,7 +20,7 @@ public class GameService implements IService {
     }
 
     @Override
-    public Response<? extends Entity> readById(Integer id) {
+    public Response<Game> readById(Integer id) {
         Response response = gameRepository.readById(id);
         return response;
     }

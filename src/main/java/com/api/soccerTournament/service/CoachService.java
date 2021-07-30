@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CoachService implements IService {
-    public final CoachRepository coachRepository;
+    private final CoachRepository coachRepository;
 
     public CoachService(CoachRepository coachRepository) {
         this.coachRepository = coachRepository;

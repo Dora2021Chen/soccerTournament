@@ -19,15 +19,6 @@ public class PersonTest extends TestBase {
         return writeAPerson(url);
     }
 
-    int writeAPerson(String url) throws Exception {
-        Person person = new Person();
-        person.name = getStr(Const.MAX_NAME_LEN);
-        person.idDocNumber = getStr(Const.MAX_ID_DOC_NUMBER_LEN);
-        person.teamId = writeATeam();
-        int personId = writeOnce(url, person, Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
-        return personId;
-    }
-
     int writeOnce(String url, Person person, int expectedResultCode, int unUxpectedResultCode) throws Exception {
         return writeOnce(url, Optional.of(person), expectedResultCode, unUxpectedResultCode);
     }

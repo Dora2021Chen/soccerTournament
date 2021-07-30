@@ -16,6 +16,7 @@ public interface Const {
     int STATUS_CODE_FAIL_GAME_NOT_EXISTS = 1201;
     int STATUS_CODE_FAIL_COACH_NOT_EXISTS = 1202;
     int STATUS_CODE_FAIL_PLAYER_NOT_EXISTS = 1203;
+    int STATUS_CODE_FAIL_TEAM_CHILD_EXISTS = 1301;
 
     HashMap<Integer, String> STATUS_MAP = new HashMap<Integer, String>() {{
         put(STATUS_CODE_SUCCEED, "succeed");
@@ -31,6 +32,7 @@ public interface Const {
         put(STATUS_CODE_FAIL_GAME_NOT_EXISTS, "game not exists");
         put(STATUS_CODE_FAIL_COACH_NOT_EXISTS, "coach not exists");
         put(STATUS_CODE_FAIL_PLAYER_NOT_EXISTS, "player not exists");
+        put(STATUS_CODE_FAIL_TEAM_CHILD_EXISTS, "cannot delete, game/coach/player exists in this team");
     }};
 
     //0, player, 1, coach

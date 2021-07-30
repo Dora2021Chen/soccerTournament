@@ -2,7 +2,6 @@ package com.api.soccerTournament.controller;
 
 import com.api.soccerTournament.model.Game;
 import com.api.soccerTournament.model.response.Const;
-import com.api.soccerTournament.utility.Utility;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -29,18 +28,6 @@ class GameControllerTest extends TestBase {
         int gameId = writeAGame();
         int gameIdReturnedByRead = readById(url, gameId);
         assertEquals(gameId, gameIdReturnedByRead);
-    }
-
-    int writeAGame() throws Exception {
-        Game game = new Game();
-        game.roundNo = 1;
-        game.team1 = writeATeam();
-        game.team2 = writeATeam();
-        game.winner = game.team2;
-
-        Utility.printGsonStr(game);
-
-        return writeOnce(game, Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
     }
 
     @Test

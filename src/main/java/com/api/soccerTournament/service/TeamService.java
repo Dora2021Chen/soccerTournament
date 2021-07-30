@@ -1,6 +1,5 @@
 package com.api.soccerTournament.service;
 
-import com.api.soccerTournament.model.Entity;
 import com.api.soccerTournament.model.Team;
 import com.api.soccerTournament.model.response.Response;
 import com.api.soccerTournament.repository.TeamRepository;
@@ -21,7 +20,7 @@ public class TeamService implements IService {
     }
 
     @Override
-    public Response<? extends Entity> readById(Integer id) {
+    public Response<Team> readById(Integer id) {
         Response response = teamRepository.readById(id);
         return response;
     }

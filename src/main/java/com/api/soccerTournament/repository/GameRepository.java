@@ -74,7 +74,7 @@ public class GameRepository extends BaseRepository implements IBaseRepository {
         }
 
         Game game = (Game) response.getEntity();
-        if ((winner != game.team1) || (winner != game.team2)) {
+        if ((!winner.equals(game.team1)) && (!winner.equals(game.team2))) {
             return new Response(Const.STATUS_CODE_FAIL_PARAM_INVALID, "winner");
         }
 

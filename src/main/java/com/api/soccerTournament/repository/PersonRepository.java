@@ -28,7 +28,7 @@ class PersonRepository extends ParticipantRepository {
         return response;
     }
 
-    public Response readById(Integer id, Byte role) {
+    protected Response readById(Integer id, Byte role) {
         Response response = readById(id, tableName, clsOutput1);
         if (response.statusCode != Const.STATUS_CODE_SUCCEED) {
             return response;
@@ -49,7 +49,7 @@ class PersonRepository extends ParticipantRepository {
         return response;
     }
 
-    protected Response readByIdDocNumber(String idDocNumber) {
+    public Response readByIdDocNumber(String idDocNumber) {
         String columnName = "idDocNumber";
         Response response = dbApi.readByColumn(columnName, tableName, clsOutput, idDocNumber);
         return response;
@@ -68,7 +68,7 @@ class PersonRepository extends ParticipantRepository {
             }
 
             Person personOld = (Person) response.getEntity();
-            if (personOld.id != person.id) {
+            if (!personOld.id.equals(person.id)) {
                 return new Response(Const.STATUS_CODE_FAIL_PERSON_ID_DOC_NUMBER_EXISTS);
             }
         }
@@ -86,7 +86,7 @@ class PersonRepository extends ParticipantRepository {
         return response;
     }
 
-    public Response delete(Integer id, Byte role) {
+    protected Response delete(Integer id, Byte role) {
         String sql = "delete from person where id=? and role=?";
         ArrayList<Object> parameters = new ArrayList<Object>() {{
             add(id);
