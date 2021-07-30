@@ -16,6 +16,8 @@ Class Introduction.pdf # the pdf format file of Class Introduction.docx
 
 Soccer Tournament API.docs   # restful API introduction
 
+Soccer Tournament API.pdf    # restful API introduction, pdf format file
+
 use jdk 1.8.0_212
 
 mvn package spring-boot:repackage   #use this command to generate a .JAR file
