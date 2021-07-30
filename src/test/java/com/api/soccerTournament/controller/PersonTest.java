@@ -10,12 +10,12 @@ import java.util.Optional;
 public class PersonTest extends TestBase {
 
     int writeACoach() throws Exception {
-        String url = baseUrlCoach + "/write";
+        String url = BASE_URL_COACH + "/write";
         return writeAPerson(url);
     }
 
     int writeAPlayer() throws Exception {
-        String url = baseUrlPlayer + "/write";
+        String url = BASE_URL_PLAYER + "/write";
         return writeAPerson(url);
     }
 

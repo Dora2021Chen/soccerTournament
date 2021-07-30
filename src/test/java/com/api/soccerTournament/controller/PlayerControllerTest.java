@@ -15,13 +15,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PlayerControllerTest extends PersonTest {
     @Test
     void readAll() throws Exception {
-        String url = baseUrlPlayer + "/getAll";
+        String url = BASE_URL_PLAYER + "/getAll";
         readAll(url);
     }
 
     @Test
     void readById() throws Exception {
-        String url = baseUrlPlayer + "/getById";
+        String url = BASE_URL_PLAYER + "/getById";
         int personId = writeAPlayer();
         int personIdReturnedByRead = readById(url, personId);
         assertEquals(personId, personIdReturnedByRead);
@@ -33,12 +33,12 @@ class PlayerControllerTest extends PersonTest {
 
     @Test
     void write() throws Exception {
-        String url = baseUrlPlayer + "/write";
+        String url = BASE_URL_PLAYER + "/write";
         write(url);
     }
 
     void delete(int id, int expectedResultCode, int unUxpectedResultCode) throws Exception {
-        String url = baseUrlPlayer + "/delete";
+        String url = BASE_URL_PLAYER + "/delete";
         delete(url, id, expectedResultCode, unUxpectedResultCode);
     }
 

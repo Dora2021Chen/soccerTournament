@@ -18,20 +18,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class TeamControllerTest extends TestBase {
     @Test
     void readAll() throws Exception {
-        String url = baseUrlTeam + "/getAll";
+        String url = BASE_URL_TEAM + "/getAll";
         readAll(url);
     }
 
     @Test
     void readById() throws Exception {
-        String url = baseUrlTeam + "/getById";
+        String url = BASE_URL_TEAM + "/getById";
         int teamId = writeATeam();
         int teamIdReturnedByRead = readById(url, teamId);
         assertEquals(teamId, teamIdReturnedByRead);
     }
 
     int writeOnce(Team team, int expectedResultCode, int unUxpectedResultCode) throws Exception {
-        String url = baseUrlTeam + "/write";
+        String url = BASE_URL_TEAM + "/write";
         return writeOnce(url, Optional.of(team), expectedResultCode, unUxpectedResultCode);
     }
 
@@ -55,7 +55,7 @@ class TeamControllerTest extends TestBase {
     }
 
     void delete(int id, int expectedResultCode, int unUxpectedResultCode) throws Exception {
-        String url = baseUrlTeam + "/delete";
+        String url = BASE_URL_TEAM + "/delete";
         delete(url, id, expectedResultCode, unUxpectedResultCode);
     }
 

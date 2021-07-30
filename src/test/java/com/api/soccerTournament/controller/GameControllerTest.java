@@ -18,13 +18,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class GameControllerTest extends TestBase {
     @Test
     void readAll() throws Exception {
-        String url = baseUrlGame + "/getAll";
+        String url = BASE_URL_GAME + "/getAll";
         readAll(url);
     }
 
     @Test
     void readById() throws Exception {
-        String url = baseUrlGame + "/getById";
+        String url = BASE_URL_GAME + "/getById";
         int gameId = writeAGame();
         int gameIdReturnedByRead = readById(url, gameId);
         assertEquals(gameId, gameIdReturnedByRead);
@@ -37,7 +37,7 @@ class GameControllerTest extends TestBase {
     }
 
     int writeOnce(Game game, int expectedResultCode, int unUxpectedResultCode) throws Exception {
-        String url = baseUrlGame + "/write";
+        String url = BASE_URL_GAME + "/write";
         return writeOnce(url, Optional.of(game), expectedResultCode, unUxpectedResultCode);
     }
 
@@ -99,7 +99,7 @@ class GameControllerTest extends TestBase {
     }
 
     void delete(int id, int expectedResultCode, int unUxpectedResultCode) throws Exception {
-        String url = baseUrlGame + "/delete";
+        String url = BASE_URL_GAME + "/delete";
         delete(url, id, expectedResultCode, unUxpectedResultCode);
     }
 

@@ -28,14 +28,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class TestBase {
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-    protected static final String baseUrlTeam = "/api/soccerTournament/team";
-    protected static final String baseUrlGame = "/api/soccerTournament/game";
-    protected static final String baseUrlCoach = "/api/soccerTournament/coach";
-    protected static final String baseUrlPlayer = "/api/soccerTournament/player";
+    protected static final String BASE_URL_TEAM = "/api/soccerTournament/team";
+    protected static final String BASE_URL_GAME = "/api/soccerTournament/game";
+    protected static final String BASE_URL_COACH = "/api/soccerTournament/coach";
+    protected static final String BASE_URL_PLAYER = "/api/soccerTournament/player";
 
-    Gson gson = new Gson();
+    private Gson gson = new Gson();
 
     protected static final int INVALID_STATUS = -1;
     protected static final int INVALID_ID = -1;
@@ -45,11 +45,11 @@ public class TestBase {
             MediaType.APPLICATION_JSON.getSubtype(),
             Charset.forName("utf8"));
 
-    public static boolean isStatusCodeValid(int statusCode) {
+    protected static boolean isStatusCodeValid(int statusCode) {
         return Const.STATUS_MAP.containsKey(statusCode);
     }
 
-    public static String getStr(int length) {
+    protected static String getStr(int length) {
         StringBuilder teamNameBuilder = new StringBuilder();
         teamNameBuilder.append("test");
         while (teamNameBuilder.length() < Const.MAX_NAME_LEN) {
@@ -60,7 +60,7 @@ public class TestBase {
         return teamNameBuilder.toString();
     }
 
-    void readAll(String url) throws Exception {
+    protected void readAll(String url) throws Exception {
         ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.get(url));
         actions.andExpect(MockMvcResultMatchers.status().isOk());
 
@@ -73,7 +73,7 @@ public class TestBase {
         assertNotNull(response.entities);
     }
 
-    int readById(String url, Integer id) throws Exception {
+    protected int readById(String url, Integer id) throws Exception {
         LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
         requestParams.add("id", id.toString());
         ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.get(url).params(requestParams));
@@ -95,7 +95,7 @@ public class TestBase {
         }
     }
 
-    int writeOnce(String url, Optional<? extends Entity> optionalEntity
+    protected int writeOnce(String url, Optional<? extends Entity> optionalEntity
             , int expectedResultCode, int unUxpectedResultCode) throws Exception {
         String teamJson = Utility.getGsonStr(optionalEntity.get());
         RequestBuilder requestBuilder;
@@ -130,16 +130,16 @@ public class TestBase {
         }
     }
 
-    int writeATeam() throws Exception {
+    protected int writeATeam() throws Exception {
         Team team = new Team();
         team.name = TestBase.getStr(50);
-        String url = baseUrlTeam + "/write";
+        String url = BASE_URL_TEAM + "/write";
         int teamId = writeOnce(url, Optional.of(team), Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
         return teamId;
     }
 
-    int writeAGame() throws Exception {
-        String url = baseUrlGame + "/write";
+    protected int writeAGame() throws Exception {
+        String url = BASE_URL_GAME + "/write";
         Game game = new Game();
         game.roundNo = 1;
         game.team1 = writeATeam();
@@ -151,7 +151,7 @@ public class TestBase {
         return writeOnce(url, Optional.of(game), Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
     }
 
-    int writeAPerson(String url) throws Exception {
+    protected int writeAPerson(String url) throws Exception {
         Person person = new Person();
         person.name = getStr(Const.MAX_NAME_LEN);
         person.idDocNumber = getStr(Const.MAX_ID_DOC_NUMBER_LEN);
@@ -160,7 +160,7 @@ public class TestBase {
         return personId;
     }
 
-    void delete(String url, Integer id, int expectedResultCode, int unUxpectedResultCode) throws Exception {
+    protected void delete(String url, Integer id, int expectedResultCode, int unUxpectedResultCode) throws Exception {
         LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
         requestParams.add("id", id.toString());
         ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.delete(url).params(requestParams));
