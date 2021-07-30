@@ -66,5 +66,20 @@ class TeamControllerTest extends TestBase {
         int teamId = writeATeam();
         delete(teamId, Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
         delete(teamId, Const.STATUS_CODE_FAIL_TEAM_NOT_EXISTS, INVALID_STATUS);
+
+        int team1 = writeATeam();
+        int team2 = writeATeam();
+        int gameId = writeAGameForATeam(team1, team2);
+        delete(team1, Const.STATUS_CODE_FAIL_TEAM_CHILD_EXISTS, INVALID_STATUS);
+        delete(team2, Const.STATUS_CODE_FAIL_TEAM_CHILD_EXISTS, INVALID_STATUS);
+        deleteAGame(gameId, Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
+        delete(team1, Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
+        delete(team2, Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
+
+        teamId = writeATeam();
+        int personId = writeAPersonForATeam(BASE_URL_COACH, teamId);
+        delete(teamId, Const.STATUS_CODE_FAIL_TEAM_CHILD_EXISTS, INVALID_STATUS);
+        deleteAPerson(BASE_URL_COACH, personId, Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
+        delete(teamId, Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
     }
 }

@@ -28,14 +28,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class TestBase {
     @Autowired
-    private MockMvc mockMvc;
+    protected MockMvc mockMvc;
 
     protected static final String BASE_URL_TEAM = "/api/soccerTournament/team";
     protected static final String BASE_URL_GAME = "/api/soccerTournament/game";
     protected static final String BASE_URL_COACH = "/api/soccerTournament/coach";
     protected static final String BASE_URL_PLAYER = "/api/soccerTournament/player";
 
-    private Gson gson = new Gson();
+    protected Gson gson = new Gson();
 
     protected static final int INVALID_STATUS = -1;
     protected static final int INVALID_ID = -1;
@@ -138,6 +138,19 @@ public class TestBase {
         return teamId;
     }
 
+    protected int writeAGameForATeam(Integer team1, Integer team2) throws Exception {
+        String url = BASE_URL_GAME + "/write";
+        Game game = new Game();
+        game.roundNo = 1;
+        game.team1 = team1;
+        game.team2 = team2;
+        game.winner = game.team2;
+
+        Utility.printGsonStr(game);
+
+        return writeOnce(url, Optional.of(game), Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
+    }
+
     protected int writeAGame() throws Exception {
         String url = BASE_URL_GAME + "/write";
         Game game = new Game();
@@ -151,6 +164,16 @@ public class TestBase {
         return writeOnce(url, Optional.of(game), Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
     }
 
+    protected int writeAPersonForATeam(String baseUrl, Integer teamId) throws Exception {
+        String url = baseUrl + "/write";
+        Person person = new Person();
+        person.name = getStr(Const.MAX_NAME_LEN);
+        person.idDocNumber = getStr(Const.MAX_ID_DOC_NUMBER_LEN);
+        person.teamId = teamId;
+        int personId = writeOnce(url, Optional.of(person), Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
+        return personId;
+    }
+
     protected int writeAPerson(String url) throws Exception {
         Person person = new Person();
         person.name = getStr(Const.MAX_NAME_LEN);
@@ -158,6 +181,16 @@ public class TestBase {
         person.teamId = writeATeam();
         int personId = writeOnce(url, Optional.of(person), Const.STATUS_CODE_SUCCEED, INVALID_STATUS);
         return personId;
+    }
+
+    void deleteAGame(int id, int expectedResultCode, int unUxpectedResultCode) throws Exception {
+        String url = BASE_URL_GAME + "/delete";
+        delete(url, id, expectedResultCode, unUxpectedResultCode);
+    }
+
+    void deleteAPerson(String baseUrl, int id, int expectedResultCode, int unUxpectedResultCode) throws Exception {
+        String url = baseUrl + "/delete";
+        delete(url, id, expectedResultCode, unUxpectedResultCode);
     }
 
     protected void delete(String url, Integer id, int expectedResultCode, int unUxpectedResultCode) throws Exception {
