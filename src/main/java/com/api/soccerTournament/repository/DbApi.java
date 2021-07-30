@@ -220,7 +220,7 @@ class DbApi {
     Response write(Optional<? extends Entity> optionalEntity, String tableName) {
         Response response;
 
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = getConnection()) {
             connection.setAutoCommit(false);
             response = write(connection, optionalEntity, tableName);
             connection.commit();
@@ -290,8 +290,7 @@ class DbApi {
 
     Response delete(Integer id, String tableName) {
         Response response;
-        try {
-            Connection connection = getConnection();
+        try (Connection connection = getConnection()) {
             connection.setAutoCommit(false);
             response = delete(connection, id, tableName);
             connection.commit();
@@ -315,8 +314,7 @@ class DbApi {
 
     Response executeNonQuery(String sql, ArrayList<Object> parameters) {
         Response response;
-        try {
-            Connection connection = getConnection();
+        try (Connection connection = getConnection()) {
             connection.setAutoCommit(false);
             response = executeNonQuery(connection, sql, parameters);
             connection.commit();
