@@ -127,7 +127,7 @@ class GameControllerTest extends TestBase {
         setGameResult(gameId, team2 + 1, Const.STATUS_CODE_FAIL_PARAM_INVALID, INVALID_STATUS);
     }
 
-    protected void setGameResult(Integer id, Integer winner
+    private void setGameResult(Integer id, Integer winner
             , int expectedResultCode, int unUxpectedResultCode) throws Exception {
         String url = BASE_URL_GAME + "/setGameResult";
         LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();

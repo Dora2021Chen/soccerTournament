@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.util.LinkedMultiValueMap;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,7 +44,7 @@ public class TestBase {
     private static final MediaType APPLICATION_JSON_UTF8
             = new MediaType(MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),
-            Charset.forName("utf8"));
+            StandardCharsets.UTF_8);
 
     protected static boolean isStatusCodeValid(int statusCode) {
         return Const.STATUS_MAP.containsKey(statusCode);
@@ -183,12 +184,12 @@ public class TestBase {
         return personId;
     }
 
-    void deleteAGame(int id, int expectedResultCode, int unUxpectedResultCode) throws Exception {
+    protected void deleteAGame(int id, int expectedResultCode, int unUxpectedResultCode) throws Exception {
         String url = BASE_URL_GAME + "/delete";
         delete(url, id, expectedResultCode, unUxpectedResultCode);
     }
 
-    void deleteAPerson(String baseUrl, int id, int expectedResultCode, int unUxpectedResultCode) throws Exception {
+    protected void deleteAPerson(String baseUrl, int id, int expectedResultCode, int unUxpectedResultCode) throws Exception {
         String url = baseUrl + "/delete";
         delete(url, id, expectedResultCode, unUxpectedResultCode);
     }

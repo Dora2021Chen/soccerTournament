@@ -46,7 +46,6 @@ class DbApi {
         }
     }
 
-
     private void initialize() {
         HikariConfig config = new HikariConfig();
         StringBuilder urlBuilder = new StringBuilder();

@@ -33,7 +33,7 @@ public class GameController implements IController {
     }
 
     @PutMapping(path = "/setGameResult", produces = Const.RESPONSE_FORMAT)
-    public Response<Game> setGameResult(@RequestParam Integer id, @RequestParam Integer winner) {
+    public Response setGameResult(@RequestParam Integer id, @RequestParam Integer winner) {
         if (id == null) return new Response(Const.STATUS_CODE_FAIL_PARAM_NULL, "id");
         if (winner == null) return new Response(Const.STATUS_CODE_FAIL_PARAM_NULL, "winner");
         if (id <= 0) return new Response(Const.STATUS_CODE_FAIL_PARAM_INVALID, "id");
