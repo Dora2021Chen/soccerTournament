@@ -23,7 +23,7 @@ public class TeamRepository extends ParticipantRepository implements IBaseReposi
     static {
         StringBuilder sqlStrBuilder = new StringBuilder();
 
-        sqlStrBuilder.append("select * from team a where id =?\n");
+        sqlStrBuilder.append("select id,name from team a where id =?\n");
         sqlStrBuilder.append("and (exists (select 1 from game b where b.team1=a.id or b.team2=a.id)\n");
         sqlStrBuilder.append("or exists (select 1 from person c where c.teamId=a.id))");
 

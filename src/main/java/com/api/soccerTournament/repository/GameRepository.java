@@ -117,7 +117,7 @@ public class GameRepository extends BaseRepository implements IBaseRepository {
         }
         if (response.entities.size() > 0) {
             Entity entity = response.getEntity();
-            if ((game.id == null) || (entity.id != game.id)) {
+            if ((game.id == null) || (!entity.id.equals(game.id))) {
                 return new Response(Const.STATUS_CODE_FAIL_GAME_EXISTS);
             }
         }
