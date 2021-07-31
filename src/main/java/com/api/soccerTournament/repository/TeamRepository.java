@@ -57,7 +57,7 @@ public class TeamRepository extends ParticipantRepository implements IBaseReposi
     public Response write(Team team) {
         Response response = readByName(team.name);
         if (response.statusCode != Const.STATUS_CODE_SUCCEED) {
-            Utility.printGsonStr(response);
+            //Utility.printGsonStr(response);
             return response;
         }
 

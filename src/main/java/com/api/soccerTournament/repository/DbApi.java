@@ -259,7 +259,7 @@ class DbApi {
         sqlStrBuilder.append(paramBuilder).deleteCharAt(sqlStrBuilder.length() - 1);
         sqlStrBuilder.append(")");
         sqlStrBuilder.append(updateBuilder).deleteCharAt(sqlStrBuilder.length() - 1);
-        Utility.printStr(sqlStrBuilder.toString());
+        //Utility.printStr(sqlStrBuilder.toString());
         String sql = sqlStrBuilder.toString();
 
         PreparedStatement prepareStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
