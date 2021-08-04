@@ -3,7 +3,6 @@ package com.api.soccerTournament.repository;
 import com.api.soccerTournament.model.Team;
 import com.api.soccerTournament.model.response.Const;
 import com.api.soccerTournament.model.response.Response;
-import com.api.soccerTournament.utility.Utility;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

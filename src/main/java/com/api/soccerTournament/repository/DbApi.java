@@ -153,48 +153,44 @@ class DbApi {
         return resultColFieldMap;
     }
 
-    Response read(Connection connection, String sql, ArrayList<Object> parameters, Class<? extends Entity> cls) {
+    Response read(Connection connection, String sql, ArrayList<Object> parameters, Class<? extends Entity> cls) throws Exception {
         ArrayList<Entity> entities = new ArrayList<>();
 
         Response response;
-        try {
-            PreparedStatement prepareStatement = connection.prepareStatement(sql);
-            if (parameters != null) {
-                for (int i = 0; i < parameters.size(); i++) {
-                    prepareStatement.setObject(i + 1, parameters.get(i));
-                }
+        PreparedStatement prepareStatement = connection.prepareStatement(sql);
+        if (parameters != null) {
+            for (int i = 0; i < parameters.size(); i++) {
+                prepareStatement.setObject(i + 1, parameters.get(i));
             }
-
-            ResultSet rs = prepareStatement.executeQuery();
-            ResultSetMetaData resultSetMetaData = prepareStatement.getMetaData();
-            HashMap<String, Field> resultColFieldMap = getResultColumnFieldMap(cls, resultSetMetaData);
-
-            String colName;
-            Object propertyVal;
-            Byte propertyValByte;
-            Field field;
-            while (rs.next()) {
-                Entity entity = cls.getDeclaredConstructor().newInstance();
-                for (Map.Entry<String, Field> entry : resultColFieldMap.entrySet()) {
-                    colName = entry.getKey();
-                    field = entry.getValue();
-
-                    propertyVal = rs.getObject(colName);
-                    if (field.getType().equals(Byte.class)) {
-                        propertyValByte = Byte.valueOf(propertyVal.toString());
-                        field.set(entity, propertyValByte);
-                    } else {
-                        field.set(entity, propertyVal);
-                    }
-                }
-                entities.add(entity);
-            }
-
-            prepareStatement.close();
-            response = new Response(Const.STATUS_CODE_SUCCEED, entities);
-        } catch (Exception ex) {
-            response = new Response(Const.STATUS_CODE_FAIL, ex.getMessage());
         }
+
+        ResultSet rs = prepareStatement.executeQuery();
+        ResultSetMetaData resultSetMetaData = prepareStatement.getMetaData();
+        HashMap<String, Field> resultColFieldMap = getResultColumnFieldMap(cls, resultSetMetaData);
+
+        String colName;
+        Object propertyVal;
+        Byte propertyValByte;
+        Field field;
+        while (rs.next()) {
+            Entity entity = cls.getDeclaredConstructor().newInstance();
+            for (Map.Entry<String, Field> entry : resultColFieldMap.entrySet()) {
+                colName = entry.getKey();
+                field = entry.getValue();
+
+                propertyVal = rs.getObject(colName);
+                if (field.getType().equals(Byte.class)) {
+                    propertyValByte = Byte.valueOf(propertyVal.toString());
+                    field.set(entity, propertyValByte);
+                } else {
+                    field.set(entity, propertyVal);
+                }
+            }
+            entities.add(entity);
+        }
+
+        prepareStatement.close();
+        response = new Response(Const.STATUS_CODE_SUCCEED, entities);
 
         return response;
     }
@@ -301,7 +297,7 @@ class DbApi {
         return response;
     }
 
-    Response delete(Connection connection, Integer id, String tableName) {
+    Response delete(Connection connection, Integer id, String tableName) throws Exception {
         StringBuilder sqlStrBuilder = new StringBuilder();
         sqlStrBuilder.append("delete from ").append(tableName).append(" where id=?");
         ArrayList<Object> parameters = new ArrayList<Object>() {{
@@ -325,23 +321,17 @@ class DbApi {
         return response;
     }
 
-    Response executeNonQuery(Connection connection, String sql, ArrayList<Object> parameters) {
+    Response executeNonQuery(Connection connection, String sql, ArrayList<Object> parameters) throws Exception {
         Response response;
-
-        try {
-            PreparedStatement prepareStatement = connection.prepareStatement(sql);
-
-            if (parameters != null) {
-                for (int i = 0; i < parameters.size(); i++) {
-                    prepareStatement.setObject(i + 1, parameters.get(i));
-                }
+        PreparedStatement prepareStatement = connection.prepareStatement(sql);
+        if (parameters != null) {
+            for (int i = 0; i < parameters.size(); i++) {
+                prepareStatement.setObject(i + 1, parameters.get(i));
             }
-
-            prepareStatement.execute();
-            response = new Response(Const.STATUS_CODE_SUCCEED);
-        } catch (Exception ex) {
-            response = new Response(Const.STATUS_CODE_FAIL, ex.getMessage());
         }
+
+        prepareStatement.execute();
+        response = new Response(Const.STATUS_CODE_SUCCEED);
 
         return response;
     }
