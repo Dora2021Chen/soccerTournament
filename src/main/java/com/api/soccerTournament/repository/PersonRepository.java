@@ -82,7 +82,7 @@ class PersonRepository extends ParticipantRepository {
             return new Response(Const.STATUS_CODE_FAIL_TEAM_NOT_EXISTS);
         }
 
-        response = dbApi.write(Optional.of(personInternal), tableName);
+        response = dbApi.write(personInternal, tableName);
         return response;
     }
 

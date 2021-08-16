@@ -121,7 +121,7 @@ public class GameRepository extends BaseRepository implements IBaseRepository {
                 return new Response(Const.STATUS_CODE_FAIL_GAME_EXISTS);
             }
         }
-        response = dbApi.write(Optional.of(game), tableName);
+        response = dbApi.write(game, tableName);
         return response;
     }
 

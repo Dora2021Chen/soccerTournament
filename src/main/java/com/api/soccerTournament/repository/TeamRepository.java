@@ -64,7 +64,7 @@ public class TeamRepository extends ParticipantRepository implements IBaseReposi
             return new Response(Const.STATUS_CODE_FAIL_TEAM_NAME_EXISTS);
         }
 
-        response = dbApi.write(Optional.of(team), tableName);
+        response = dbApi.write(team, tableName);
         return response;
     }
 

@@ -213,12 +213,12 @@ class DbApi {
         return colNames;
     }
 
-    Response write(Optional<? extends Entity> optionalEntity, String tableName) {
+    <S extends Entity> Response write(S entity, String tableName) {
         Response response;
 
         try (Connection connection = getConnection()) {
             connection.setAutoCommit(false);
-            response = write(connection, optionalEntity, tableName);
+            response = write(connection, entity, tableName);
             connection.commit();
         } catch (Exception ex) {
             response = new Response(Const.STATUS_CODE_FAIL, ex.getMessage());
@@ -227,10 +227,9 @@ class DbApi {
         return response;
     }
 
-    Response write(Connection connection, Optional<? extends Entity> optionalEntity, String tableName) throws SQLException, NoSuchFieldException, IllegalAccessException {
+    <S extends Entity> Response write(Connection connection, S entity, String tableName) throws SQLException, NoSuchFieldException, IllegalAccessException {
         Response response;
-        Entity entity = optionalEntity.get();
-        Class cls = optionalEntity.get().getClass();
+        Class cls = entity.getClass();
 
         StringBuilder sqlStrBuilder = new StringBuilder();
         sqlStrBuilder.append("insert into ").append(tableName).append("(");
